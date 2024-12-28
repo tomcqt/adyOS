@@ -1,7 +1,7 @@
 import * as acr from "./acr.js";
 
 function startup() {
-    console.log("Hello, world!");
+    console.log("Welcome to adyOS!\n");
     acr.start()
 }
 
