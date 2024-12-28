@@ -2,7 +2,7 @@ import * as acr from "./acr.js";
 
 function startup() {
     console.log("Hello, world!");
-    acr.run("testing 123");
+    acr.start()
 }
 
 export { startup };

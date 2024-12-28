@@ -5,4 +5,8 @@ function run(command) {
     console.log(command+" was ran!");
 }
 
-export { run };
+function start() { // acr.start();
+    console.log("add terminal here or something");
+}
+
+export { acr };
