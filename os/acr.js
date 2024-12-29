@@ -3,14 +3,14 @@
 import * as input from "./../custom_modules/wfi.js";
 import * as echo from "./cmd/echo.js";
 
-function run(command) {
+async function run(command) {
   // add later
   return command + " was run!";
 }
 
-function start() {
+async function start() {
   // acr.start();
-  input.asks("terminal $ ");
+  await input.asks("terminal $ ");
 }
 
 export { start };

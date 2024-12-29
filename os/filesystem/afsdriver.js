@@ -1,6 +1,6 @@
 // adyOS File System Driver
 
-function setdefault(username) {
+async function setdefault(username) {
   return "/usr/" + username + "/fs/home/";
 }
 

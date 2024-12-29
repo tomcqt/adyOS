@@ -2,7 +2,7 @@
 
 import * as readline from "readline";
 
-function asks(query) {
+async function asks(query) {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
