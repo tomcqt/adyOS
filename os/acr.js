@@ -1,10 +1,11 @@
 // adyOS Command Runner / ACR
 
 import * as input from "./../custom_modules/wfi.js";
+import * as echo from "./cmd/echo.js";
 
 function run(command) {
     // add later
-    console.log(command+" was ran!");
+    return command+" was run!";
 }
 
 function start() { // acr.start();

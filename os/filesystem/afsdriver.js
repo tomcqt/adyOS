@@ -1,3 +1,7 @@
 // adyOS File System Driver
 
-// add later
+function setdefault(username) {
+    return "/usr/"+username+"/fs/home/";
+}
+
+export { setdefault };
