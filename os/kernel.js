@@ -1,3 +1,5 @@
+// adyOS Kernel
+
 import * as acr from "./acr.js";
 
 function startup() {
