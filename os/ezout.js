@@ -9,6 +9,10 @@ function error(text) {
   console.log("[ ERROR ] " + text);
 }
 
+function warn(text) {
+  console.log("[ WARN ] " + text);
+}
+
 function working(text) {
   console.log("[ WORKING ] " + text);
 }
@@ -17,4 +21,4 @@ function done(text) {
   console.log("[ DONE ] " + text);
 }
 
-export { info, error, working, done };
+export { info, error, warn, working, done };

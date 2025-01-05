@@ -14,5 +14,8 @@
     "system"
   ],
   "author": "alyx",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "password-prompt": "^1.1.3"
+  }
 }
