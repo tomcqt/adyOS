@@ -1,40 +1,65 @@
 // Login Screen
 
 import * as wfi from "./../../../custom_modules/wfi.js";
+import * as ezout from "./../../ezout.js";
+import * as fs from "fs";
 
 async function show() {
-  console.log("1. adyos.tomcat.sh");
-  console.log("2. Custom Server\n");
+  let exists, allowed;
 
-  let domain; // set server domain
-  while (1 == 1) {
-    let ask = await wfi.asks("Server to connect to: ");
-    if (ask == "2") {
-      domain = await wfi.asks("Server URL: "); // add server checking here eventually to see if its a real server. probably add something to the server to say its an adyos server too, as that would be useful.
-      break;
-    } else if (ask == "1") {
-      domain = "adyos.tomcat.sh";
-      break;
-    } else {
-      console.log("Try again.");
-    }
+  ezout.working("Checking for users file");
+
+  try {
+    await fs.promises.access("./os/filesystem/users.json"); // remember to look from the root dir
+    exists = true;
+  } catch (error) {
+    exists = false;
   }
 
-  while (1 == 1) {
-    console.log("\n1. Log In\n2. Sign up\n");
-    let ask = await wfi.asks("1 or 2: ");
-    if (ask == "1") {
-      console.log("log in screen");
-      break;
-    } else if (ask == "2") {
-      console.log("sign up screen");
-      break;
+  ezout.done("Checking for users file");
+
+  // console.log(exists);
+
+  if (exists) {
+    ezout.info('"users.json" exists.');
+
+    ezout.working("Reading for users");
+
+    let usersdata = JSON.parse(
+      Buffer.from(
+        await fs.promises.readFile("./os/filesystem/users.json")
+      ).toString()
+    );
+
+    ezout.done("Reading for users");
+
+    if (usersdata.users == []) {
+      allowed = [false, true];
     } else {
-      console.log("Try again!");
+      allowed = [true, true];
     }
+  } else {
+    ezout.error('"users.json" not found.');
+
+    // create users.json
+
+    ezout.working("Writing default users file");
+
+    await fs.promises.writeFile(
+      "./os/filesystem/users.json",
+      JSON.stringify({
+        users: [],
+      })
+    );
+
+    ezout.done("Writing default users file");
+
+    allowed = [false, true];
   }
 
-  return { server: domain };
+  ezout.info("Starting login screen");
+
+  return {};
 }
 
 export { show };
