@@ -10,7 +10,7 @@ import * as logins from "./filesystem/usr/login.js";
 console.log('kernel $ loaded "./os/filesystem/usr/login.js"');
 import * as acr from "./acr.js";
 console.log('kernel $ loaded "./os/acr.js"');
-
+import * as delay from "../custom_modules/delay.js";
 console.log('kernel $ loaded "./custom_modules/delay.js"');
 console.log('kernel $ loaded "./custom_modules/wfi.js"');
 
@@ -18,11 +18,14 @@ console.log("kernel $ files loaded");
 
 console.log("kernel $ starting boot process");
 
+console.log("\nWelcome to adyOS!");
+
+delay.wait(2500);
+
 async function startup() {
-  console.log("Welcome to adyOS!\n");
   ezout.info("Loading login screen");
   let usrinfo = await logins.show(); // show login screen
-  acr.start(username);
+  acr.start(usrinfo);
 }
 
 export { startup };

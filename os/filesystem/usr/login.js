@@ -43,15 +43,15 @@ async function show() {
     if (usersdata.users.length == 0) {
       allowed = [false, true];
       if (usersdata.signuplocked == true) {
-        ezout.error("Can't do anything! (No users and sign up locked)");
+        ezout.error_nodebug("Can't do anything! (No users and sign up locked)");
         q = await wfi.asks("Nuke user info? (y/N) $ ");
         if (q.toLowerCase() == "y") {
-          ezout.warn("Nuking users.json");
+          ezout.warn_nodebug("Nuking users.json");
           await fs.promises.unlink("./os/filesystem/users.json");
-          ezout.info("Nuked users file, shutting down.");
+          ezout.info_nodebug("Nuked users file, shutting down.");
           process.exit();
         } else {
-          ezout.info("Shutting down");
+          ezout.info_nodebug("Shutting down");
           process.exit();
         }
       }
@@ -63,7 +63,7 @@ async function show() {
       }
     }
   } else {
-    ezout.error('"users.json" not found.');
+    ezout.error_nodebug('"users.json" not found.');
 
     // create users.json
 
@@ -85,21 +85,35 @@ async function show() {
   ezout.info("Starting login screen");
 
   while (1 == 1) {
+    console.clear();
+
+    let login, signup;
+
     if (allowed[0]) {
-      console.log("1. Log in");
+      login = "l. log in";
     } else {
-      console.log("1. Disabled (Log in)");
+      login = "l. disabled (log in)";
     }
     if (allowed[1]) {
-      console.log("2. Sign up");
+      signup = "s. sign up";
     } else {
-      console.log("2. Disabled (Sign up)");
+      signup = "s. disabled (sign up)";
     }
-    console.log("q. Quit");
 
-    q = await wfi.asks("> ");
+    let text = `   ┓  ┏┓┏┓ ${login}
+┏┓┏┫┓┏┃┃┗┓ ${signup}
+┗┻┗┻┗┫┗┛┗┛ q. quit
+     ┛    
+choose then press enter`;
 
-    if (q == "1" && allowed[0]) {
+    console.log(text);
+    q = await read({
+      prompt: "",
+      silent: true,
+      replace: "",
+    });
+
+    if (q.toLowerCase() == "l" && allowed[0]) {
       // login screen
 
       while (1 == 1) {
@@ -125,7 +139,7 @@ async function show() {
           }
         });
         if (itemnum == null) {
-          ezout.error("Account doesn't exist!");
+          ezout.error_nodebug("Account doesn't exist!");
         } else {
           if (usersdata.users[itemnum].password == password_hashed) {
             ezout.info("Logged in as " + username);
@@ -133,7 +147,7 @@ async function show() {
             ezout.done("Logging in");
             return username;
           } else {
-            ezout.error("Incorrect password!");
+            ezout.error_nodebug("Incorrect password!");
           }
         }
         ezout.done("Checking for account");
@@ -141,7 +155,7 @@ async function show() {
         console.log();
         break;
       }
-    } else if (q == "2" && allowed[1]) {
+    } else if (q.toLowerCase == "s" && allowed[1]) {
       // signup screen
 
       let pwdout;
@@ -173,7 +187,7 @@ async function show() {
           break;
         } else {
           ezout.done("Verifying password");
-          ezout.warn("Passwords do not match!");
+          ezout.error_nodebug("Passwords do not match!");
           if (debug.debug) {
             console.log();
           }
@@ -214,11 +228,11 @@ async function show() {
       console.log();
       ezout.info_nodebug("Account created!");
       console.log();
-    } else if (q == "1" && !allowed[0]) {
+    } else if (q.toLowerCase() == "l" && !allowed[0]) {
       ezout.warn_nodebug("That option is disabled.");
-    } else if (q == "2" && !allowed[1]) {
+    } else if (q.toLowerCase() == "s" && !allowed[1]) {
       ezout.warn_nodebug("That option is disabled.");
-    } else if (q == "q") {
+    } else if (q.toLowerCase() == "q") {
       ezout.info_nodebug("Quitting");
       process.exit();
     } else {
