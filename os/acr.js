@@ -32,6 +32,9 @@ async function start(username) {
     command = await input.asks(prompt);
     commandsplit = command.split(" ");
 
+    ezout.info(command);
+    ezout.info(commandsplit);
+
     if (cmd.cmd.find((item) => item[0] === commandsplit[0])) {
       for (let i = 0; i < cmd.cmd.length; i++) {
         if (cmd.cmd[i][0] === commandsplit[0]) {

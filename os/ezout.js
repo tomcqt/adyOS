@@ -4,31 +4,31 @@
 import * as debug from "../debug.js";
 
 function info(text) {
-  if (debug.debug) {
+  if (debug.debug == true) {
     console.log("[ INFO ] " + text);
   }
 }
 
 function error(text) {
-  if (debug.debug) {
+  if (debug.debug == true) {
     console.log("[ ERROR ] " + text);
   }
 }
 
 function warn(text) {
-  if (debug.debug) {
+  if (debug.debug == true) {
     console.log("[ WARN ] " + text);
   }
 }
 
 function working(text) {
-  if (debug.debug) {
+  if (debug.debug == true) {
     console.log("[ WORKING ] " + text);
   }
 }
 
 function done(text) {
-  if (debug.debug) {
+  if (debug.debug == true) {
     console.log("[ DONE ] " + text);
   }
 }

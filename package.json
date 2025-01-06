@@ -6,8 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "start": "node index.js",
-    "run": "node index.js"
+    "boot": "node index.js"
   },
   "keywords": [
     "operating",

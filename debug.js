@@ -1,2 +1,2 @@
-let debug_mode = false;
-export { debug_mode };
+let debug = false;
+export { debug };
