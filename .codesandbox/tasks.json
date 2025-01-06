@@ -18,11 +18,6 @@
       "name": "start",
       "command": "node index.js",
       "runAtStart": true
-    },
-    "run": {
-      "name": "run",
-      "command": "npm run run",
-      "runAtStart": false
     }
   }
 }
