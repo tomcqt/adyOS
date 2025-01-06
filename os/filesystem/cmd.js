@@ -2,6 +2,7 @@ import * as ezout from "../ezout.js";
 import { read } from "read";
 import * as crypto from "crypto";
 import * as fs from "fs";
+import * as debug from "../../debug.js";
 
 let lastsuper = 0;
 
@@ -63,30 +64,36 @@ async function super_(cmd_, cmds, usr) {
       itemnum = index;
     }
   });
-  if (!usersdata.users[itemmnum].sudo) {
+  if (!usersdata.users[itemnum].sudo) {
     return "[ ERROR ] Super is not allowed for this account!";
   }
-  let password = await read({
-    prompt: "Password: ",
-    silent: true,
-    replace: "#",
-  });
-  let password_hashed = crypto
-    .createHash("sha256")
-    .update(password)
-    .digest("base64");
-  if (lastsuper >= Date.now() - 300) {
-    return await cmd[i][1](cmd_, cmds, usr);
-  } else if (usersdata.users[itemnum].password == password_hashed) {
-    if (cmd.find((item) => item[0] === cmds[1])) {
-      for (let i = 0; i < cmd.length; i++) {
-        if (cmd[i][0] === cmds[1]) {
-          lastsuper = Date.now();
-          return await cmd[i][1](cmd_, cmds, usr);
+  for (let i = 0; i < 2; i++) {
+    let password = await read({
+      prompt: "Password: ",
+      silent: true,
+      replace: "#",
+    });
+    let password_hashed = crypto
+      .createHash("sha256")
+      .update(password)
+      .digest("base64");
+    if (lastsuper >= Date.now() - 300) {
+      return await cmd[i][1](cmd_, cmds, usr);
+    } else if (usersdata.users[itemnum].password == password_hashed) {
+      if (cmd.find((item) => item[0] === cmds[1])) {
+        for (let i = 0; i < cmd.length; i++) {
+          if (cmd[i][0] === cmds[1]) {
+            lastsuper = Date.now();
+            return await cmd[i][1](cmd_, cmds, usr);
+          }
         }
       }
+    } else {
+      ezout.error_nodebug("Incorrect password!");
     }
   }
+  ezout.error_nodebug("Too many attempts!");
+  return { output: "", userdata: usr };
 }
 
 function clearscreen(cmd, cmds) {
@@ -100,6 +107,13 @@ function quit(cmd, cmds) {
   process.exit();
 }
 
+async function test(cmd, cmds, usr) {
+  cmds.shift();
+  return {
+    output: "Test command ran with data: " + cmds.join(" "),
+    userdata: usr,
+  };
+}
 // 1: [name, function, flags]
 // flags: [flags needed, async or not, user data needed]
 let cmd = [
@@ -110,5 +124,10 @@ let cmd = [
   ["clear", clearscreen, [false]],
   ["super", super_, [true, true, true]],
 ];
+
+// add test command if in debug mode
+if (debug.debug) {
+  cmd.push(["test", test, [false]]);
+}
 
 export { cmd };

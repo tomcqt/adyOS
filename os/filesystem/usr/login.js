@@ -92,24 +92,26 @@ async function show() {
   ezout.info("Starting login screen");
 
   while (1 == 1) {
-    console.clear();
+    if (!debug.debug) {
+      console.clear();
+    }
 
     let login, signup;
 
     if (allowed[0]) {
-      login = "l. log in";
+      login = "L. log in";
     } else {
-      login = "l. disabled (log in)";
+      login = "L. disabled (log in)";
     }
     if (allowed[1]) {
-      signup = "s. sign up";
+      signup = "S. sign up";
     } else {
-      signup = "s. disabled (sign up)";
+      signup = "S. disabled (sign up)";
     }
 
     let text = `   ┓  ┏┓┏┓ ${login}
 ┏┓┏┫┓┏┃┃┗┓ ${signup}
-┗┻┗┻┗┫┗┛┗┛ q. quit
+┗┻┗┻┗┫┗┛┗┛ Q. quit
      ┛    
 choose then press enter`;
 

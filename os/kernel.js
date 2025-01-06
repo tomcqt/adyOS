@@ -1,6 +1,9 @@
 // adyOS Kernel
 import * as delay from "../custom_modules/delay.js";
-console.clear();
+import * as debug from "../debug.js";
+if (!debug.debug) {
+  console.clear();
+}
 console.log("kernel $ loading files");
 await delay.wait(Math.random() * 30);
 console.log('kernel $ loaded "./index.js"');
@@ -20,6 +23,8 @@ console.log('kernel $ loaded "./custom_modules/delay.js"');
 await delay.wait(Math.random() * 30);
 console.log('kernel $ loaded "./custom_modules/wfi.js"');
 await delay.wait(Math.random() * 30);
+console.log('kernel $ loaded "./debug.js"');
+await delay.wait(Math.random() * 30);
 
 console.log("kernel $ files loaded");
 await delay.wait(Math.random() * 30);
@@ -28,6 +33,9 @@ console.log("kernel $ starting boot process");
 await delay.wait(Math.random() * 30);
 
 console.log("\nWelcome to adyOS!");
+ezout.info("Now with DEBUG MODE!!!!!!!!!!!!!!!!!!");
+ezout.warn("Debug mode enabled, it may look wacky.");
+ezout.warn("YOU HAVE BEEN WARNED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 delay.wait(2500);
 

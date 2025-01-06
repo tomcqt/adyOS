@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "boot": "node index.js"
+    "boot": "node index.js",
+    "debug": "node index.js --debug-mode-enabled"
   },
   "keywords": [
     "operating",
