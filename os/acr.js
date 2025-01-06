@@ -8,8 +8,16 @@ import * as ezout from "./ezout.js";
 async function start(username) {
   // acr.start();
 
-  console.log(`\nWelcome, ${username}!\n`);
-  console.log(`The system time is: `);
+  console.log(`\nWelcome, ${username}!`);
+  console.log(
+    `The system time is: ${new Date()
+      .toISOString()
+      .replace("T", " ")
+      .split(".")[0]
+      .split(" ")
+      .reverse()
+      .join(" on ")}\n`
+  );
 
   let path = afs.setdefault(username);
   let pathrewritten, prompt, command, commandsplit; // define variables here

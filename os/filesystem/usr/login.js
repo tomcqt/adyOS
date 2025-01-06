@@ -155,7 +155,7 @@ choose then press enter`;
         console.log();
         break;
       }
-    } else if (q.toLowerCase == "s" && allowed[1]) {
+    } else if (q.toLowerCase() == "s" && allowed[1]) {
       // signup screen
 
       let pwdout;
@@ -230,13 +230,16 @@ choose then press enter`;
       console.log();
     } else if (q.toLowerCase() == "l" && !allowed[0]) {
       ezout.warn_nodebug("That option is disabled.");
+      await delay.wait(1000);
     } else if (q.toLowerCase() == "s" && !allowed[1]) {
       ezout.warn_nodebug("That option is disabled.");
+      await delay.wait(1000);
     } else if (q.toLowerCase() == "q") {
       ezout.info_nodebug("Quitting");
       process.exit();
     } else {
       ezout.warn_nodebug("That isn't an option!");
+      await delay.wait(1000);
     }
   }
 }
