@@ -1,0 +1,1 @@
+find . -name '*.js' -not -path "./node_modules*" | sed 's/.*/"&"/' | xargs wc -l | sort -nr | grep -v total$ && find . -name '*.js' -not -path "./node_modules*" | sed 's/.*/"&"/' | xargs wc -l | sort -nr | grep total$

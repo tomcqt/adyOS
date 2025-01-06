@@ -6,13 +6,15 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "start": "node index.js",
-    "run": "node index.js"
+    "boot": "node index.js"
   },
   "keywords": [
     "operating",
     "system"
   ],
-  "author": "alyx",
-  "license": "MIT"
+  "author": "tomcat with a q",
+  "license": "MIT",
+  "dependencies": {
+    "read": "^4.0.0"
+  }
 }
