@@ -20,12 +20,14 @@ async function start(username) {
   );
 
   let path = afs.setdefault(username);
-  let pathrewritten, prompt, command, commandsplit; // define variables here
+  let pathrewritten, prompt, command, commandsplit, systemname; // define variables here
+
+  systemname = await afs.getsystemname();
 
   while (true) {
     pathrewritten = afs.rewritepath(path.toString(), username);
 
-    prompt = `${username}@SYSTEMNAME ${pathrewritten} $ `;
+    prompt = `${username}@${systemname} ${pathrewritten} $ `;
 
     command = await input.asks(prompt);
     commandsplit = command.split(" ");
@@ -33,7 +35,7 @@ async function start(username) {
     if (cmd.cmd.find((item) => item[0] === commandsplit[0])) {
       for (let i = 0; i < cmd.cmd.length; i++) {
         if (cmd.cmd[i][0] === commandsplit[0]) {
-          if (cmd.cmd[i][2][0]) {
+          if (!cmd.cmd[i][2][0]) {
             // flags check
             console.log(cmd.cmd[i][1](command, commandsplit));
             break;
@@ -43,9 +45,13 @@ async function start(username) {
               // await flag
               if (cmd.cmd[i][2][2]) {
                 // user data flag and await
-                console.log(
-                  await cmd.cmd[i][1](command, commandsplit, username)
-                );
+                let cmd_data = await cmd.cmd[i][1](command, commandsplit, {
+                  username: username,
+                  systemname: systemname,
+                });
+                console.log(cmd_data.output);
+                username = cmd_data.userdata.username;
+                systemname = cmd_data.userdata.systemname;
               } else {
                 // await no user data flag
                 console.log(await cmd.cmd[i][1](command, commandsplit));
@@ -54,7 +60,13 @@ async function start(username) {
               // no await
               if (cmd.cmd[i][2][2]) {
                 // user data flag
-                console.log(cmd.cmd[i][1](command, commandsplit, username));
+                let cmd_data = cmd.cmd[i][1](command, commandsplit, {
+                  username: username,
+                  systemname: systemname,
+                });
+                console.log(cmd_data.output);
+                username = cmd_data.userdata.username;
+                systemname = cmd_data.userdata.systemname;
               } else {
                 // no user data flag
                 console.log(cmd.cmd[i][1](command, commandsplit));

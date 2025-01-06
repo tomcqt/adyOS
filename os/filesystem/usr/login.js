@@ -74,10 +74,17 @@ async function show() {
       JSON.stringify({
         users: [],
         signuplocked: false,
+        sysname: "adyos",
       })
     );
 
     ezout.done("Writing default users file");
+
+    usersdata = JSON.parse(
+      Buffer.from(
+        await fs.promises.readFile("./os/filesystem/users.json")
+      ).toString()
+    );
 
     allowed = [false, true];
   }
@@ -140,6 +147,7 @@ choose then press enter`;
         });
         if (itemnum == null) {
           ezout.error_nodebug("Account doesn't exist!");
+          await delay.wait(1000);
         } else {
           if (usersdata.users[itemnum].password == password_hashed) {
             ezout.info("Logged in as " + username);
@@ -148,6 +156,7 @@ choose then press enter`;
             return username;
           } else {
             ezout.error_nodebug("Incorrect password!");
+            await delay.wait(1000);
           }
         }
         ezout.done("Checking for account");
@@ -188,6 +197,7 @@ choose then press enter`;
         } else {
           ezout.done("Verifying password");
           ezout.error_nodebug("Passwords do not match!");
+          await delay.wait(1000);
           if (debug.debug) {
             console.log();
           }
@@ -228,6 +238,8 @@ choose then press enter`;
       console.log();
       ezout.info_nodebug("Account created!");
       console.log();
+
+      allowed = [true, true];
     } else if (q.toLowerCase() == "l" && !allowed[0]) {
       ezout.warn_nodebug("That option is disabled.");
       await delay.wait(1000);

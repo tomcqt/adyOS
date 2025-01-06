@@ -1,5 +1,7 @@
 // adyOS File System Driver
 
+import * as fs from "fs";
+
 function setdefault(username) {
   return "/home/" + username + "/";
 }
@@ -13,4 +15,10 @@ function rewritepath(path, username) {
   return newpath;
 }
 
-export { setdefault, rewritepath };
+async function getsystemname() {
+  let file = await fs.promises.readFile("./os/filesystem/users.json");
+  let json = await JSON.parse(Buffer.from(file));
+  return json.sysname;
+}
+
+export { setdefault, rewritepath, getsystemname };
