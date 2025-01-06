@@ -3,7 +3,10 @@
 import * as wfi from "./../../../custom_modules/wfi.js";
 import * as ezout from "./../../ezout.js";
 import * as delay from "./../../../custom_modules/delay.js";
+import * as debug from "../../../debug.js";
+import { read } from "read";
 import * as fs from "fs";
+import * as crypto from "crypto";
 
 async function show() {
   let exists, allowed, q;
@@ -21,12 +24,15 @@ async function show() {
 
   // console.log(exists);
 
+  let usersdata;
+  let done;
+
   if (exists) {
     ezout.info('"users.json" exists.');
 
     ezout.working("Reading for users");
 
-    let usersdata = JSON.parse(
+    usersdata = JSON.parse(
       Buffer.from(
         await fs.promises.readFile("./os/filesystem/users.json")
       ).toString()
@@ -78,51 +84,145 @@ async function show() {
 
   ezout.info("Starting login screen");
 
-  console.log();
-  if (allowed[0]) {
-    console.log("1. Log in");
-  } else {
-    console.log("1. Disabled (Log in)");
-  }
-  if (allowed[1]) {
-    console.log("2. Sign up");
-  } else {
-    console.log("2. Disabled (Sign up)");
-  }
-  console.log("q. Quit");
-
   while (1 == 1) {
+    if (allowed[0]) {
+      console.log("1. Log in");
+    } else {
+      console.log("1. Disabled (Log in)");
+    }
+    if (allowed[1]) {
+      console.log("2. Sign up");
+    } else {
+      console.log("2. Disabled (Sign up)");
+    }
+    console.log("q. Quit");
+
     q = await wfi.asks("> ");
 
     if (q == "1" && allowed[0]) {
-      ezout.warn("Login screen doesn't exist yet!");
+      // login screen
+
+      while (1 == 1) {
+        console.log();
+        let username = await wfi.asks("Username: ");
+        let password = await read({
+          prompt: "Password: ",
+          silent: true,
+          replace: "#",
+        });
+        ezout.working("Logging in");
+        ezout.working("Hashing password");
+        let password_hashed = crypto
+          .createHash("sha256")
+          .update(password)
+          .digest("base64");
+        ezout.done("Hashing password");
+        ezout.working("Checking for account");
+        let itemnum;
+        usersdata.users.forEach((item, index) => {
+          if (item.username == username) {
+            itemnum = index;
+          }
+        });
+        if (itemnum == null) {
+          ezout.error("Account doesn't exist!");
+        } else {
+          if (usersdata.users[itemnum].password == password_hashed) {
+            ezout.info("Logged in as " + username);
+            ezout.done("Checking for account");
+            ezout.done("Logging in");
+            return username;
+          } else {
+            ezout.error("Incorrect password!");
+          }
+        }
+        ezout.done("Checking for account");
+        ezout.done("Logging in");
+        console.log();
+        break;
+      }
     } else if (q == "2" && allowed[1]) {
       // signup screen
+
+      let pwdout;
       console.log();
       let username = await wfi.asks("Username: ");
       while (1 == 1) {
-        let password = await wfi.passwd("Password: ");
-        let password2 = await wfi.passwd("Repeat password: ");
+        let password = await read({
+          prompt: "Password: ",
+          silent: true,
+          replace: "#",
+        });
+        let password2 = await read({
+          prompt: "Repeat password: ",
+          silent: true,
+          replace: "#",
+        });
 
+        if (debug.debug) {
+          console.log();
+        }
         ezout.working("Verifying password");
         if (password == password2) {
           ezout.done("Verifying password");
           ezout.info("Password verified");
+          pwdout = password;
+          if (debug.debug) {
+            console.log();
+          }
           break;
         } else {
           ezout.done("Verifying password");
           ezout.warn("Passwords do not match!");
+          if (debug.debug) {
+            console.log();
+          }
         }
       }
+
+      let question = await wfi.asks('Allow "super" access? (y/N) ');
+
+      let sudo;
+      if (question.toLowerCase() == "y") {
+        sudo = true;
+      } else {
+        sudo = false;
+      }
+
+      ezout.working("Hashing password");
+      let password_hashed = crypto
+        .createHash("sha256")
+        .update(pwdout)
+        .digest("base64");
+      ezout.done("Hashing password");
+
+      ezout.working("Writing to memory");
+      usersdata.users.push({
+        username: username,
+        password: password_hashed,
+        sudo: sudo,
+      });
+      ezout.done("Writing to memory");
+
+      ezout.working("Writing to file");
+      await fs.promises.writeFile(
+        "./os/filesystem/users.json",
+        JSON.stringify(usersdata)
+      );
+      ezout.done("Writing to file");
+
+      console.log();
+      ezout.info_nodebug("Account created!");
+      console.log();
     } else if (q == "1" && !allowed[0]) {
-      ezout.warn("That option is disabled.");
+      ezout.warn_nodebug("That option is disabled.");
     } else if (q == "2" && !allowed[1]) {
-      ezout.warn("That option is disabled.");
+      ezout.warn_nodebug("That option is disabled.");
     } else if (q == "q") {
-      ezout.info("Quitting");
+      ezout.info_nodebug("Quitting");
       process.exit();
     } else {
-      ezout.warn("That isn't an option!");
+      ezout.warn_nodebug("That isn't an option!");
     }
   }
 }

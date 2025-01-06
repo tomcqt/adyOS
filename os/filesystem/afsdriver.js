@@ -1,7 +1,11 @@
 // adyOS File System Driver
 
 async function setdefault(username) {
-  return "/usr/" + username + "/fs/home/";
+  return "/home/" + username + "/";
 }
 
-export { setdefault };
+async function rewritepath(path, username) {
+  return path.replace("/home/" + username, "~");
+}
+
+export { setdefault, rewritepath };
