@@ -67,7 +67,7 @@ async function super_(cmd_, cmds, usr) {
   if (!usersdata.users[itemnum].sudo) {
     return "[ ERROR ] Super is not allowed for this account!";
   }
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 3; i++) {
     let password = await read({
       prompt: "Password: ",
       silent: true,
