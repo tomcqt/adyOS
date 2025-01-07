@@ -37,7 +37,7 @@ ezout.info("Now with DEBUG MODE!!!!!!!!!!!!!!!!!!");
 ezout.warn("Debug mode enabled, it may look wacky.");
 ezout.warn("YOU HAVE BEEN WARNED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
-delay.wait(2500);
+await delay.wait(1000);
 
 async function startup() {
   ezout.info("Loading login screen");

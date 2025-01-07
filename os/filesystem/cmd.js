@@ -5,6 +5,7 @@ import * as fs from "fs";
 import * as debug from "../../debug.js";
 
 let lastsuper = 0;
+let supercmds = ["system"];
 
 function echo(cmd, cmds) {
   cmds.shift();
@@ -28,25 +29,37 @@ function system(cmd, cmds, usr) {
         } else {
           return {
             output: "[ ERROR ] Argument does not exist!",
-            userdata: usr,
+            userdata: {
+              username: usr.username,
+              systemname: usr.systemname,
+            },
           };
         }
       } else {
         return {
           output: "[ ERROR ] Argument does not exist!",
-          userdata: usr,
+          userdata: {
+            username: usr.username,
+            systemname: usr.systemname,
+          },
         };
       }
     } else {
       return {
         output: "[ ERROR ] Argument does not exist!",
-        userdata: usr,
+        userdata: {
+          username: usr.username,
+          systemname: usr.systemname,
+        },
       };
     }
   } else {
     return {
       output: "[ ERROR ] Superuser access needed!",
-      userdata: usr,
+      userdata: {
+        username: usr.username,
+        systemname: usr.systemname,
+      },
     };
   }
 }
@@ -71,20 +84,37 @@ async function super_(cmd_, cmds, usr) {
     let password = await read({
       prompt: "Password: ",
       silent: true,
-      replace: "#",
+      replace: "•",
     });
     let password_hashed = crypto
       .createHash("sha256")
       .update(password)
       .digest("base64");
-    if (lastsuper >= Date.now() - 300) {
+    let date = Date.now();
+    if (lastsuper > date - 300000) {
+      // check if the last authentication was within 5 minutes ago
       return await cmd[i][1](cmd_, cmds, usr);
     } else if (usersdata.users[itemnum].password == password_hashed) {
       if (cmd.find((item) => item[0] === cmds[1])) {
         for (let i = 0; i < cmd.length; i++) {
           if (cmd[i][0] === cmds[1]) {
-            lastsuper = Date.now();
-            return await cmd[i][1](cmd_, cmds, usr);
+            if (supercmds.includes(cmds[1])) {
+              lastsuper = Date.now();
+              let out = await cmd[i][1](cmd_, cmds, JSON.parse(usr));
+              if (typeof out == "string") {
+                return {
+                  output: out,
+                  userdata: JSON.parse(usr),
+                };
+              } else {
+                return out;
+              }
+            } else {
+              return {
+                output: '[ ERROR ] Command isn\'t allowed to use "super".',
+                userdata: JSON.parse(usr),
+              };
+            }
           }
         }
       }
@@ -93,7 +123,10 @@ async function super_(cmd_, cmds, usr) {
     }
   }
   ezout.error_nodebug("Too many attempts!");
-  return { output: "", userdata: usr };
+  return {
+    output: "",
+    userdata: JSON.parse(usr),
+  };
 }
 
 function clearscreen(cmd, cmds) {
@@ -110,8 +143,9 @@ function quit(cmd, cmds) {
 async function test(cmd, cmds, usr) {
   cmds.shift();
   return {
-    output: "Test command ran with data: " + cmds.join(" "),
-    userdata: usr,
+    output: ["wow its the test command", cmd, cmds],
+    userdata: JSON.parse(usr),
+    hello: "from the test command",
   };
 }
 // 1: [name, function, flags]
@@ -126,8 +160,10 @@ let cmd = [
 ];
 
 // add test command if in debug mode
+// also add it so you can use it with super
 if (debug.debug) {
   cmd.push(["test", test, [false]]);
+  supercmds.push("test");
 }
 
 export { cmd };

@@ -131,7 +131,7 @@ choose then press enter`;
         let password = await read({
           prompt: "Password: ",
           silent: true,
-          replace: "#",
+          replace: "•",
         });
         ezout.working("Logging in");
         ezout.working("Hashing password");
@@ -176,12 +176,12 @@ choose then press enter`;
         let password = await read({
           prompt: "Password: ",
           silent: true,
-          replace: "#",
+          replace: "•",
         });
         let password2 = await read({
           prompt: "Repeat password: ",
           silent: true,
-          replace: "#",
+          replace: "•",
         });
 
         if (debug.debug) {
