@@ -38,44 +38,29 @@ async function start(username) {
     if (cmd.cmd.find((item) => item[0] === commandsplit[0])) {
       for (let i = 0; i < cmd.cmd.length; i++) {
         if (cmd.cmd[i][0] === commandsplit[0]) {
-          if (!cmd.cmd[i][2][0]) {
-            // flags check
-            console.log(cmd.cmd[i][1](command, commandsplit));
-            break;
+          let result = await cmd.cmd[i][1]({
+            cmd: command,
+            cmds: commandsplit,
+            usr: {
+              username: username,
+              systemname: systemname,
+            },
+          });
+          if (result instanceof Promise) {
+            result.then((output) => (result = output));
+          }
+          if (typeof result != "string") {
+            username = result.userdata.username;
+            systemname = result.userdata.systemname;
+            if (result.output !== 1) {
+              console.log(result.output);
+            }
           } else {
-            // dont add too many they take forever to add
-            if (cmd.cmd[i][2][1]) {
-              // await flag
-              if (cmd.cmd[i][2][2]) {
-                // user data flag and await
-                let cmd_data = await cmd.cmd[i][1](command, commandsplit, {
-                  username: username,
-                  systemname: systemname,
-                });
-                console.log(cmd_data.output);
-                username = cmd_data.userdata.username;
-                systemname = cmd_data.userdata.systemname;
-              } else {
-                // await no user data flag
-                console.log(await cmd.cmd[i][1](command, commandsplit));
-              }
-            } else {
-              // no await
-              if (cmd.cmd[i][2][2]) {
-                // user data flag
-                let cmd_data = cmd.cmd[i][1](command, commandsplit, {
-                  username: username,
-                  systemname: systemname,
-                });
-                console.log(cmd_data.output);
-                username = cmd_data.userdata.username;
-                systemname = cmd_data.userdata.systemname;
-              } else {
-                // no user data flag
-                console.log(cmd.cmd[i][1](command, commandsplit));
-              }
+            if (result !== 1) {
+              console.log(result);
             }
           }
+          break;
         }
       }
     } else {

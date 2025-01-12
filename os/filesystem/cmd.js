@@ -7,64 +7,42 @@ import * as debug from "../../debug.js";
 let lastsuper = 0;
 let supercmds = ["system"];
 
-function echo(cmd, cmds) {
-  cmds.shift();
-  return cmds.join(" ");
+function echo(arg) {
+  arg.cmds.shift();
+  return arg.cmds.join(" ");
 }
 
-function system(cmd, cmds, usr) {
-  if (cmds[0] == "super") {
-    if (cmds[2] == "info") {
-      if (cmds[3] == "name") {
-        if (cmds[4] == "get") {
-          return { output: usr.systemname, userdata: usr };
-        } else if (cmds[4] == "set") {
+function system(arg) {
+  if (arg.cmds[0] == "super") {
+    if (arg.cmds[2] == "info") {
+      if (arg.cmds[3] == "name") {
+        if (arg.cmds[4] == "get") {
+          return { output: arg.usr.systemname, userdata: arg.usr };
+        } else if (arg.cmds[4] == "set") {
           return {
-            output: "Set systemname to " + (cmds[5] == "." ? "adyos" : cmds[5]),
+            output:
+              "Set systemname to " +
+              (arg.cmds[5] == "." ? "adyos" : arg.cmds[5]),
             userdata: {
-              username: usr.username,
-              systemname: cmds[5] == "." ? "adyos" : cmds[5],
+              username: arg.usr.username,
+              systemname: arg.cmds[5] == "." ? "adyos" : arg.cmds[5],
             },
           };
         } else {
-          return {
-            output: "[ ERROR ] Argument does not exist!",
-            userdata: {
-              username: usr.username,
-              systemname: usr.systemname,
-            },
-          };
+          return "[ ERROR ] Argument does not exist!";
         }
       } else {
-        return {
-          output: "[ ERROR ] Argument does not exist!",
-          userdata: {
-            username: usr.username,
-            systemname: usr.systemname,
-          },
-        };
+        return "[ ERROR ] Argument does not exist!";
       }
     } else {
-      return {
-        output: "[ ERROR ] Argument does not exist!",
-        userdata: {
-          username: usr.username,
-          systemname: usr.systemname,
-        },
-      };
+      return "[ ERROR ] Argument does not exist!";
     }
   } else {
-    return {
-      output: "[ ERROR ] Superuser access needed!",
-      userdata: {
-        username: usr.username,
-        systemname: usr.systemname,
-      },
-    };
+    return "[ ERROR ] Superuser access needed!";
   }
 }
 
-async function super_(cmd_, cmds, usr) {
+async function super_(arg) {
   ezout.info(lastsuper);
   let usersdata = JSON.parse(
     Buffer.from(
@@ -73,7 +51,7 @@ async function super_(cmd_, cmds, usr) {
   );
   let itemnum;
   usersdata.users.forEach((item, index) => {
-    if (item.username == usr.username) {
+    if (item.username == arg.usr.username) {
       itemnum = index;
     }
   });
@@ -81,39 +59,29 @@ async function super_(cmd_, cmds, usr) {
     return "[ ERROR ] Super is not allowed for this account!";
   }
   for (let i = 0; i < 3; i++) {
-    let password = await read({
-      prompt: "Password: ",
-      silent: true,
-      replace: "•",
-    });
-    let password_hashed = crypto
-      .createHash("sha256")
-      .update(password)
-      .digest("base64");
-    let date = Date.now();
-    if (lastsuper > date - 300000) {
-      // check if the last authentication was within 5 minutes ago
-      return await cmd[i][1](cmd_, cmds, usr);
-    } else if (usersdata.users[itemnum].password == password_hashed) {
-      if (cmd.find((item) => item[0] === cmds[1])) {
+    let password_hashed;
+    if (lastsuper > Date.now() - 300000) {
+      password_hashed = usersdata.users[itemnum].password;
+    } else {
+      let password = await read({
+        prompt: "Password: ",
+        silent: true,
+        replace: "•",
+      });
+      password_hashed = crypto
+        .createHash("sha256")
+        .update(password)
+        .digest("base64");
+    }
+    if (usersdata.users[itemnum].password == password_hashed) {
+      if (cmd.find((item) => item[0] === arg.cmds[1])) {
         for (let i = 0; i < cmd.length; i++) {
-          if (cmd[i][0] === cmds[1]) {
-            if (supercmds.includes(cmds[1])) {
+          if (cmd[i][0] === arg.cmds[1]) {
+            if (supercmds.includes(arg.cmds[1])) {
               lastsuper = Date.now();
-              let out = await cmd[i][1](cmd_, cmds, JSON.parse(usr));
-              if (typeof out == "string") {
-                return {
-                  output: out,
-                  userdata: JSON.parse(usr),
-                };
-              } else {
-                return out;
-              }
+              return await cmd[i][1](arg);
             } else {
-              return {
-                output: '[ ERROR ] Command isn\'t allowed to use "super".',
-                userdata: JSON.parse(usr),
-              };
+              return '[ ERROR ] Command isn\'t allowed to use "super".';
             }
           }
         }
@@ -123,46 +91,38 @@ async function super_(cmd_, cmds, usr) {
     }
   }
   ezout.error_nodebug("Too many attempts!");
-  return {
-    output: "",
-    userdata: JSON.parse(usr),
-  };
+  return 1;
 }
 
-function clearscreen(cmd, cmds) {
+function clearscreen() {
   console.clear();
   return "";
 }
 
-function quit(cmd, cmds) {
+function quit() {
   console.log();
   ezout.info_nodebug("Shutting down");
   process.exit();
 }
 
-async function test(cmd, cmds, usr) {
-  cmds.shift();
-  return {
-    output: ["wow its the test command", cmd, cmds],
-    userdata: JSON.parse(usr),
-    hello: "from the test command",
-  };
+function test() {
+  return "wow its the test command";
 }
 // 1: [name, function, flags]
 // flags: [flags needed, async or not, user data needed]
 let cmd = [
-  ["echo", echo, [false]],
-  ["exit", quit, [false]],
-  ["quit", quit, [false]],
-  ["system", system, [true, false, true]],
-  ["clear", clearscreen, [false]],
-  ["super", super_, [true, true, true]],
+  ["echo", echo],
+  ["exit", quit],
+  ["quit", quit],
+  ["system", system],
+  ["clear", clearscreen],
+  ["super", super_],
 ];
 
 // add test command if in debug mode
 // also add it so you can use it with super
 if (debug.debug) {
-  cmd.push(["test", test, [false]]);
+  cmd.push(["test", test]);
   supercmds.push("test");
 }
 
