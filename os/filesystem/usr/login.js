@@ -32,15 +32,21 @@ async function show() {
 
     ezout.working("Reading for users");
 
-    usersdata = JSON.parse(
-      Buffer.from(
-        await fs.promises.readFile("./os/filesystem/users.json")
-      ).toString()
-    );
+    try {
+      usersdata = JSON.parse(
+        Buffer.from(
+          await fs.promises.readFile("./os/filesystem/users.json")
+        ).toString()
+      );
+    } catch (error) {
+      usersdata = {};
+    }
 
     ezout.done("Reading for users");
 
-    if (usersdata.users.length == 0) {
+    ezout.info(JSON.stringify(usersdata).length);
+
+    if (JSON.stringify(usersdata).length < 20) {
       allowed = [false, true];
       if (usersdata.signuplocked == true) {
         ezout.error_nodebug("Can't do anything! (No users and sign up locked)");
@@ -54,6 +60,26 @@ async function show() {
           ezout.info_nodebug("Shutting down");
           process.exit();
         }
+      } else {
+        ezout.working("Writing default users file");
+
+        await fs.promises.writeFile(
+          "./os/filesystem/users.json",
+          JSON.stringify({
+            users: [],
+            signuplocked: false,
+            superlocked: false,
+            sysname: "adyos",
+          })
+        );
+
+        ezout.done("Writing default users file");
+
+        usersdata = JSON.parse(
+          Buffer.from(
+            await fs.promises.readFile("./os/filesystem/users.json")
+          ).toString()
+        );
       }
     } else {
       if (usersdata.signuplocked == false) {
@@ -74,6 +100,7 @@ async function show() {
       JSON.stringify({
         users: [],
         signuplocked: false,
+        superlocked: false,
         sysname: "adyos",
       })
     );
@@ -171,77 +198,126 @@ choose then press enter`;
 
       let pwdout;
       console.log();
-      let username = await wfi.asks("Username: ");
-      while (1 == 1) {
-        let password = await read({
-          prompt: "Password: ",
-          silent: true,
-          replace: "•",
-        });
-        let password2 = await read({
-          prompt: "Repeat password: ",
-          silent: true,
-          replace: "•",
-        });
-
-        if (debug.debug) {
-          console.log();
-        }
-        ezout.working("Verifying password");
-        if (password == password2) {
-          ezout.done("Verifying password");
-          ezout.info("Password verified");
-          pwdout = password;
-          if (debug.debug) {
-            console.log();
-          }
+      let username;
+      while (true) {
+        username = await wfi.asks("Username: ");
+        if ((username.length <= 16 && username.length >= 3) || debug.debug) {
           break;
         } else {
-          ezout.done("Verifying password");
-          ezout.error_nodebug("Passwords do not match!");
+          ezout.warn_nodebug(
+            "Your username is the wrong size! It must be between 3 and 16 characters long."
+          );
           await delay.wait(1000);
-          if (debug.debug) {
-            console.log();
-          }
         }
       }
 
-      let question = await wfi.asks('Allow "super" access? (y/N) ');
+      let dont_continue = false;
 
-      let sudo;
-      if (question.toLowerCase() == "y") {
-        sudo = true;
-      } else {
-        sudo = false;
-      }
-
-      ezout.working("Hashing password");
-      let password_hashed = crypto
-        .createHash("sha256")
-        .update(pwdout)
-        .digest("base64");
-      ezout.done("Hashing password");
-
-      ezout.working("Writing to memory");
-      usersdata.users.push({
-        username: username,
-        password: password_hashed,
-        sudo: sudo,
+      usersdata.users.forEach(async function (item) {
+        if (item.username == username) {
+          dont_continue = true;
+          ezout.error_nodebug("Account already exists!");
+        }
       });
-      ezout.done("Writing to memory");
 
-      ezout.working("Writing to file");
-      await fs.promises.writeFile(
-        "./os/filesystem/users.json",
-        JSON.stringify(usersdata)
-      );
-      ezout.done("Writing to file");
+      ezout.info(dont_continue);
 
-      console.log();
-      ezout.info_nodebug("Account created!");
-      console.log();
+      if (dont_continue === false) {
+        while (1 == 1) {
+          let password = await read({
+            prompt: "Password: ",
+            silent: true,
+            replace: "•",
+          });
+          let password2 = await read({
+            prompt: "Repeat password: ",
+            silent: true,
+            replace: "•",
+          });
 
-      allowed = [true, true];
+          if (debug.debug) {
+            console.log();
+          }
+          ezout.working("Verifying password");
+          if (password == password2) {
+            ezout.done("Verifying password");
+            ezout.info("Password verified");
+            pwdout = password;
+            if (debug.debug) {
+              console.log();
+            }
+            break;
+          } else {
+            ezout.done("Verifying password");
+            ezout.error_nodebug("Passwords do not match!");
+            await delay.wait(1000);
+            if (debug.debug) {
+              console.log();
+            }
+          }
+        }
+
+        let question;
+        if (!usersdata.superlocked && !debug.debug) {
+          question = await wfi.asks('Allow "super" access? (y/N) ');
+        } else {
+          question = "n";
+        }
+
+        let sudo;
+        if (question.toLowerCase() == "y") {
+          sudo = true;
+        } else {
+          sudo = false;
+        }
+
+        ezout.working("Hashing password");
+        let password_hashed = crypto
+          .createHash("sha256")
+          .update(pwdout)
+          .digest("base64");
+        ezout.done("Hashing password");
+
+        ezout.working("Writing to memory");
+        usersdata.users.push({
+          username: username,
+          password: password_hashed,
+          sudo: sudo,
+        });
+        ezout.done("Writing to memory");
+
+        ezout.working("Writing to file");
+        await fs.promises.writeFile(
+          "./os/filesystem/users.json",
+          JSON.stringify(usersdata)
+        );
+        ezout.done("Writing to file");
+
+        ezout.working("Creating home directory");
+
+        let dir =
+          "./os/filesystem/home/" +
+          (
+            username.replace(/[^a-z0-9]/gi, "") +
+            btoa(username).replace(/[^a-z0-9]/gi, "")
+          ).toLowerCase();
+
+        if (!fs.existsSync(dir)) {
+          await fs.promises.mkdir(dir);
+        } else {
+          ezout.warn("Home directory already exists!");
+        }
+        ezout.done("Creating home directory");
+
+        console.log();
+        ezout.info_nodebug("Account created!");
+        console.log();
+
+        allowed = [true, true];
+      } else if (debug.debug) {
+        console.log("what the sigma?");
+      }
+      await delay.wait(1000);
     } else if (q.toLowerCase() == "l" && !allowed[0]) {
       ezout.warn_nodebug("That option is disabled.");
       await delay.wait(1000);

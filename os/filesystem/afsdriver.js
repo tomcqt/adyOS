@@ -2,8 +2,15 @@
 
 import * as fs from "fs";
 
+function gethome(username) {
+  return (
+    username.replace(/[^a-z0-9]/gi, "") +
+    btoa(username).replace(/[^a-z0-9]/gi, "")
+  ).toLowerCase();
+}
+
 function setdefault(username) {
-  return "/home/" + username + "/";
+  return "/home/" + gethome(username) + "/";
 }
 
 function rewritepath(path, username) {
@@ -11,7 +18,7 @@ function rewritepath(path, username) {
     throw new Error('Expected "path" to be a string, but got ' + typeof path);
   }
 
-  let newpath = path.replace("/home/" + username, "~");
+  let newpath = path.replace("/home/" + gethome(username), "~");
   return newpath;
 }
 

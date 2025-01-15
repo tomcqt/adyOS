@@ -4,8 +4,18 @@ import * as crypto from "crypto";
 import * as fs from "fs";
 import * as debug from "../../debug.js";
 
+// Exit Codes:
+// 0 - output nothing
+// 126 - log out
+
 let lastsuper = 0;
 let supercmds = ["system"];
+
+let optional = {
+  commands: {
+    apk: false,
+  },
+};
 
 function echo(arg) {
   arg.cmds.shift();
@@ -28,15 +38,26 @@ function system(arg) {
               systemname: arg.cmds[5] == "." ? "adyos" : arg.cmds[5],
             },
           };
-        } else {
-          return "[ ERROR ] Argument does not exist!";
         }
-      } else {
-        return "[ ERROR ] Argument does not exist!";
       }
-    } else {
-      return "[ ERROR ] Argument does not exist!";
+    } else if (arg.cmds[2] == "optional") {
+      if (arg.cmds[3] == "applications") {
+        if (arg.cmds[4] == "add") {
+          if (arg.cmds[5] == "apk") {
+            if (!optional.commands.apk) {
+              optional.commands.apk = true;
+              cmd.push(["apk", pacman]);
+              ezout.info_nodebug("Enabled APK.");
+              return 0;
+            } else {
+              ezout.info_nodebug("APK already enabed.");
+              return 0;
+            }
+          }
+        }
+      }
     }
+    return "[ ERROR ] Argument not found!";
   } else {
     return "[ ERROR ] Superuser access needed!";
   }
@@ -91,32 +112,54 @@ async function super_(arg) {
     }
   }
   ezout.error_nodebug("Too many attempts!");
-  return 1;
+  return 0;
 }
 
 function clearscreen() {
   console.clear();
-  return "";
+  return 0;
 }
 
-function quit() {
+// shuts down
+function shutdown() {
   console.log();
   ezout.info_nodebug("Shutting down");
   process.exit();
 }
 
+// just a testing command for in debug mode
 function test() {
   return "wow its the test command";
 }
-// 1: [name, function, flags]
-// flags: [flags needed, async or not, user data needed]
+
+// package manager (add later)
+async function pacman(arg) {
+  return "apk not yet created";
+}
+
+// directory system
+// return directory contents
+function contents(arg) {
+  return "returns directory contents";
+}
+
+// log out
+function exit() {
+  return 126;
+}
+
+// [name, function]
 let cmd = [
   ["echo", echo],
-  ["exit", quit],
-  ["quit", quit],
+  ["exit", exit],
+  ["quit", exit],
   ["system", system],
   ["clear", clearscreen],
   ["super", super_],
+  ["contents", contents],
+  ["ls", contents],
+  ["dir", contents],
+  ["shutdown", shutdown],
 ];
 
 // add test command if in debug mode

@@ -49,14 +49,17 @@ async function start(username) {
           if (result instanceof Promise) {
             result.then((output) => (result = output));
           }
-          if (typeof result != "string") {
+          if (result === 126) {
+            return 126;
+          }
+          if (typeof result != "string" && typeof result != "number") {
             username = result.userdata.username;
             systemname = result.userdata.systemname;
-            if (result.output !== 1) {
+            if (result.output !== 0) {
               console.log(result.output);
             }
           } else {
-            if (result !== 1) {
+            if (result !== 0) {
               console.log(result);
             }
           }
@@ -64,7 +67,9 @@ async function start(username) {
         }
       }
     } else {
-      ezout.error_nodebug("Command not found.");
+      if (command != "") {
+        ezout.error_nodebug(`Command (${commandsplit[0]}) not found.`);
+      }
     }
   }
 }
