@@ -45,6 +45,7 @@ async function start(username) {
               username: username,
               systemname: systemname,
             },
+            dir: { path: path, pathrw: pathrewritten },
           });
           if (result instanceof Promise) {
             result.then((output) => (result = output));
@@ -53,8 +54,19 @@ async function start(username) {
             return 126;
           }
           if (typeof result != "string" && typeof result != "number") {
-            username = result.userdata.username;
-            systemname = result.userdata.systemname;
+            if (result.hasOwnProperty("userdata")) {
+              if (result.userdata.hasOwnProperty("username")) {
+                username = result.userdata.username;
+              }
+              if (result.userdata.hasOwnProperty("systemname")) {
+                systemname = result.userdata.systemname;
+              }
+            }
+
+            if (result.hasOwnProperty("directory")) {
+              path = result.directory;
+            }
+
             if (result.output !== 0) {
               console.log(result.output);
             }

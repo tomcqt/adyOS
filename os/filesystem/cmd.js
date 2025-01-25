@@ -3,6 +3,8 @@ import { read } from "read";
 import * as crypto from "crypto";
 import * as fs from "fs";
 import * as debug from "../../debug.js";
+import * as childprocess from "child_process";
+import * as afs from "./afsdriver.js";
 
 // Exit Codes:
 // 0 - output nothing
@@ -128,7 +130,7 @@ function shutdown() {
 }
 
 // just a testing command for in debug mode
-function test() {
+function dbg_test() {
   return "wow its the test command";
 }
 
@@ -139,8 +141,70 @@ async function pacman(arg) {
 
 // directory system
 // return directory contents
-function contents(arg) {
-  return "returns directory contents";
+async function contents(arg) {
+  let contents = await fs.promises.readdir("./os/filesystem" + arg.dir.path);
+  let contents2 = [];
+  ezout.info("Contents: " + contents);
+
+  console.log("Contents of " + arg.dir.pathrw + ":");
+  contents.forEach((item) => {
+    ezout.info("Item: " + item);
+
+    let type = fs.statSync("./os/filesystem" + arg.dir.path + item).isFile();
+    contents2.push([item, type]);
+
+    ezout.info(type);
+  });
+  ezout.info(contents2);
+  let lsl /* longest string length */ = Math.max(
+    ...contents2.map((el) => el[0].length)
+  );
+  contents2.forEach((item) => {
+    console.log(
+      item[0],
+      " ".repeat(lsl - item[0].length) + (item[1] ? "File" : "Directory")
+    );
+  });
+
+  return 0;
+}
+
+// cd
+function cd(arg) {
+  let goto = arg.cmds[1].split("/").filter((i) => {
+    return i !== "";
+  });
+  ezout.info(goto);
+  let final_path;
+  if (arg.cmds[1].charAt(0) === "~") {
+    final_path = setdefault(arg.usr.username);
+  } else if (arg.cmds[1].charAt(0) === "/") {
+    final_path = "";
+  } else {
+    final_path = arg.dir.path;
+  }
+  final_path = "./os/filesystem" + final_path;
+
+  goto.forEach((i) => {
+    let sync = fs.statSync(final_path + i + "/");
+    if (sync.isDirectory()) {
+      final_path += i + "/";
+    } else {
+      ezout.error_nodebug(
+        "Directory doesn't exist or there is a file of the same name!"
+      );
+      return 0;
+    }
+  });
+  return {
+    output: "Went to " + afs.rewritepath(final_path),
+    directory: final_path,
+  };
+}
+
+// cd ..
+function cd_dotdot(arg) {
+  return "not done yet";
 }
 
 // log out
@@ -160,12 +224,15 @@ let cmd = [
   ["ls", contents],
   ["dir", contents],
   ["shutdown", shutdown],
+  ["enter", cd],
+  ["cd", cd],
+  ["leave", cd_dotdot],
 ];
 
-// add test command if in debug mode
+// add debug commands if in debug mode
 // also add it so you can use it with super
 if (debug.debug) {
-  cmd.push(["test", test]);
+  cmd.push(["test", dbg_test]);
   supercmds.push("test");
 }
 
