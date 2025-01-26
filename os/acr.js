@@ -4,6 +4,7 @@ import * as input from "./../custom_modules/wfi.js";
 import * as afs from "./filesystem/afsdriver.js";
 import * as cmd from "./filesystem/cmd.js";
 import * as ezout from "./ezout.js";
+import * as fs from "fs";
 
 async function start(username) {
   // acr.start();
@@ -23,6 +24,8 @@ async function start(username) {
   let pathrewritten, prompt, command, commandsplit, systemname; // define variables here
 
   systemname = await afs.getsystemname();
+
+  let version = fs.readFileSync("./os/version", "utf-8"); // read the version file
 
   while (true) {
     pathrewritten = afs.rewritepath(path.toString(), username);
@@ -46,6 +49,7 @@ async function start(username) {
               systemname: systemname,
             },
             dir: { path: path, pathrw: pathrewritten },
+            version: version,
           });
           if (result instanceof Promise) {
             result.then((output) => (result = output));

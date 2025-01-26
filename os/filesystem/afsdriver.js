@@ -13,6 +13,10 @@ function setdefault(username) {
   return "/home/" + gethome(username) + "/";
 }
 
+function getdefault(username) {
+  return setdefault(username);
+}
+
 function rewritepath(path, username) {
   if (typeof path !== "string") {
     throw new Error('Expected "path" to be a string, but got ' + typeof path);
@@ -30,4 +34,8 @@ async function getsystemname() {
   return json.sysname;
 }
 
-export { setdefault, rewritepath, getsystemname };
+function fsfix(path) {
+  return "./os/filesystem" + (path.charAt(0) == "/" ? "" : "/") + path;
+}
+
+export { setdefault, rewritepath, getsystemname, fsfix, getdefault };

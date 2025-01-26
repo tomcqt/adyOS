@@ -132,6 +132,7 @@ dist
 # files that should not be shared
 users.json
 os/filesystem/home/
+os/filesystem/sys/
 
 # more things to ignore
 .watchmanconfig

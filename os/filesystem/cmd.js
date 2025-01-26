@@ -5,6 +5,7 @@ import * as fs from "fs";
 import * as debug from "../../debug.js";
 import * as childprocess from "child_process";
 import * as afs from "./afsdriver.js";
+import * as https from "https";
 
 // Exit Codes:
 // 0 - output nothing
@@ -13,11 +14,26 @@ import * as afs from "./afsdriver.js";
 let lastsuper = 0;
 let supercmds = ["system"];
 
-let optional = {
-  commands: {
-    apk: false,
-  },
-};
+function internal_update_opt_json() {
+  fs.writeFileSync(afs.fsfix("sys/opt.json"), JSON.stringify(optional));
+}
+
+let optional;
+if (fs.existsSync(afs.fsfix("sys/opt.json"))) {
+  optional = JSON.parse(fs.readFileSync(afs.fsfix("sys/opt.json")));
+} else {
+  optional = {
+    commands: {
+      apk: false,
+    },
+  };
+
+  if (!fs.existsSync(afs.fsfix("sys"))) {
+    fs.mkdirSync(afs.fsfix("sys"));
+  }
+
+  internal_update_opt_json();
+}
 
 function echo(arg) {
   arg.cmds.shift();
@@ -45,14 +61,92 @@ function system(arg) {
     } else if (arg.cmds[2] == "optional") {
       if (arg.cmds[3] == "applications") {
         if (arg.cmds[4] == "add") {
-          if (arg.cmds[5] == "apk") {
+          if (arg.cmds[5] == "adypm") {
             if (!optional.commands.apk) {
               optional.commands.apk = true;
-              cmd.push(["apk", pacman]);
-              ezout.info_nodebug("Enabled APK.");
+              cmd.push(["adypm", pacman]);
+
+              // add directory if doesnt exist
+              if (
+                !fs.existsSync(
+                  afs.fsfix(afs.getdefault(arg.usr.username) + ".adypm")
+                )
+              ) {
+                fs.mkdirSync(
+                  afs.fsfix(afs.getdefault(arg.usr.username) + ".adypm")
+                );
+              }
+
+              // create repos.json if doesnt exist
+              if (
+                !fs.existsSync(
+                  afs.fsfix(
+                    afs.getdefault(arg.usr.username) + ".adypm/repos.json"
+                  )
+                )
+              ) {
+                fs.writeFileSync(
+                  afs.fsfix(
+                    afs.getdefault(arg.usr.username) + ".adypm/repos.json"
+                  ),
+                  JSON.stringify({ repos: [] })
+                );
+              }
+
+              // write default repo
+
+              let repos = JSON.parse(
+                fs.readFileSync(
+                  afs.fsfix(
+                    afs.getdefault(arg.usr.username) + ".adypm/repos.json"
+                  )
+                )
+              );
+              repos.repos.push({
+                name: "main",
+                url: "https://raw.tomcat.sh/adyos-default-repo/master/",
+              });
+
+              fs.writeFileSync(
+                afs.fsfix(
+                  afs.getdefault(arg.usr.username) + ".adypm/repos.json"
+                ),
+                JSON.stringify(repos)
+              );
+
+              internal_update_opt_json();
+
+              ezout.info_nodebug("Enabled AdyPM.");
               return 0;
             } else {
-              ezout.info_nodebug("APK already enabed.");
+              ezout.info_nodebug("AdyPM already enabed.");
+              return 0;
+            }
+          }
+        } else if (arg.cmds[4] == "remove") {
+          if (arg.cmds[5] == "adypm") {
+            if (optional.commands.apk) {
+              optional.commands.apk = false;
+              cmd.forEach((item, index) => {
+                if (item[0] == "adypm") {
+                  cmd.splice(index, 1);
+                }
+              });
+
+              // remove directory
+              fs.rmSync(
+                afs.fsfix(afs.getdefault(arg.usr.username) + ".adypm"),
+                {
+                  recursive: true,
+                }
+              );
+
+              internal_update_opt_json();
+
+              ezout.info_nodebug("Disabled AdyPM.");
+              return 0;
+            } else {
+              ezout.info_nodebug("AdyPM already disabled.");
               return 0;
             }
           }
@@ -134,9 +228,41 @@ function dbg_test() {
   return "wow its the test command";
 }
 
-// package manager (add later)
+// package manager
 async function pacman(arg) {
-  return "apk not yet created";
+  let prompt = arg.cmds[1];
+  let repos = JSON.parse(
+    fs.readFileSync(
+      afs.fsfix(afs.getdefault(arg.usr.username) + ".adypm/repos.json")
+    )
+  );
+  if (arg.cmds.length == 1) {
+    console.log("AdyPM      - AdyOS Package Manager");
+    console.log("+[package] - Install Package");
+    console.log("-[package] - Uninstall Package");
+    console.log("/[repo]    - Add Repository");
+    console.log("\\[repo]    - Remove Repository");
+    return 0;
+  } else {
+    if (prompt.charAt(0) == "+") {
+      console.log("AdyPM (Package Install Mode)");
+      let pkg = prompt.slice(1);
+      ezout.working_nodebug("Checking repos...");
+      repos.repos.forEach((item, index) => {
+        let code;
+
+        https.get(item.url + "adypm.json", (res) => {
+          res.on("end", () => {
+            code = res.statusCode;
+          });
+        });
+
+        ezout.info(code);
+      });
+    }
+  }
+  ezout.error_nodebug("Invalid syntax");
+  return 0;
 }
 
 // directory system
@@ -259,6 +385,11 @@ let cmd = [
 if (debug.debug) {
   cmd.push(["test", dbg_test]);
   supercmds.push("test");
+}
+
+// add optional commands if they are enabled in /sys/opt.json
+if (optional.commands.apk) {
+  cmd.push(["adypm", pacman]);
 }
 
 export { cmd };
