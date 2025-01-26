@@ -1,0 +1,5 @@
+echo Running first-boot setup...
+git init
+npm i
+echo Done!
+echo Use "./bin/boot" to start the app.
