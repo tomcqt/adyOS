@@ -13,9 +13,10 @@ No idea. :P
 1. Install `git` and `npm` for your operating system.
 2. Clone the repo using `git clone https://git.tomcat.sh/adyos`
 3. Enter the repo using `cd adyos`
-4. Run the setup script using `./bin/setup`
-5. Start it with `./bin/boot`
-6. (optional) Use debug mode with `./bin/debug`
+4. Make the scripts executable using `chmod +x bin/*`
+5. Setup with `npm i`
+6. Start it with `./bin/boot`
+7. (optional) Use debug mode with `./bin/debug`
 
 ## Changelog
 
@@ -27,4 +28,8 @@ No idea. :P
 ### dev.0.1
 
 - Finished making the directory system.
-- Added boot, debug & setup scripts.
+- Added boot & debug scripts.
+
+### dev.0.2
+
+- Added instructions for how to install
