@@ -18,7 +18,9 @@ function rewritepath(path, username) {
     throw new Error('Expected "path" to be a string, but got ' + typeof path);
   }
 
-  let newpath = path.replace("/home/" + gethome(username), "~");
+  let newpath = path
+    .replace("/home/" + gethome(username), "~")
+    .replace("./os/filesystem", "");
   return newpath;
 }
 

@@ -146,7 +146,12 @@ async function contents(arg) {
   let contents2 = [];
   ezout.info("Contents: " + contents);
 
-  console.log("Contents of " + arg.dir.pathrw + ":");
+  console.log(
+    "Contents of " +
+      arg.dir.pathrw +
+      ":" +
+      (contents.length == 0 ? " (empty)" : "")
+  );
   contents.forEach((item) => {
     ezout.info("Item: " + item);
 
@@ -166,45 +171,64 @@ async function contents(arg) {
     );
   });
 
+  ezout.info("Contents length: " + contents.length);
+  ezout.info("Contents 2 length: " + contents2.length);
+
   return 0;
 }
 
 // cd
 function cd(arg) {
   let goto = arg.cmds[1].split("/").filter((i) => {
-    return i !== "";
+    return i !== "" && i !== "." && i !== ".." && i !== "~";
   });
   ezout.info(goto);
   let final_path;
   if (arg.cmds[1].charAt(0) === "~") {
-    final_path = setdefault(arg.usr.username);
+    final_path = afs.setdefault(arg.usr.username);
   } else if (arg.cmds[1].charAt(0) === "/") {
     final_path = "";
+  } else if ([arg.cmds[1].charAt(0), arg.cmds[1].charAt(1)].join("") === "..") {
+    let ps /* path split */ = arg.dir.path.split("/");
+    ezout.info(ps);
+    if (ps[ps.length - 1] === "") {
+      ps.pop();
+    }
+    ps.pop();
+    ezout.info(ps);
+    final_path = ps.join("/");
+    ezout.info(final_path);
   } else {
     final_path = arg.dir.path;
   }
   final_path = "./os/filesystem" + final_path;
 
   goto.forEach((i) => {
-    let sync = fs.statSync(final_path + i + "/");
-    if (sync.isDirectory()) {
-      final_path += i + "/";
+    if (fs.existsSync(final_path + i + "/")) {
+      let sync = fs.statSync(final_path + i + "/");
     } else {
-      ezout.error_nodebug(
-        "Directory doesn't exist or there is a file of the same name!"
-      );
+      ezout.error_nodebug("No such file or directory: " + i);
+      return 0;
+    }
+    if (sync.isDirectory()) {
+      final_path += i;
+      final_path += "/";
+    } else {
+      ezout.error_nodebug("Directory has a file of the same name!");
       return 0;
     }
   });
+
+  /* add slash just in case */
+  if (!final_path.endsWith("/")) {
+    final_path += "/";
+  }
+
+  ezout.info("fp:" + final_path);
   return {
-    output: "Went to " + afs.rewritepath(final_path),
+    output: "Went to " + afs.rewritepath(final_path, arg.usr.username),
     directory: final_path,
   };
-}
-
-// cd ..
-function cd_dotdot(arg) {
-  return "not done yet";
 }
 
 // log out
@@ -226,7 +250,6 @@ let cmd = [
   ["shutdown", shutdown],
   ["enter", cd],
   ["cd", cd],
-  ["leave", cd_dotdot],
 ];
 
 // add debug commands if in debug mode

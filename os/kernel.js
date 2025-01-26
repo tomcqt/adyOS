@@ -32,6 +32,10 @@ await delay.wait(Math.random() * 30);
 console.log("kernel $ starting boot process");
 await delay.wait(Math.random() * 30);
 
+console.log("kernel $ loading folder structure");
+import * as fs from "fs";
+fs.existsSync("./os/filesystem/home") || fs.mkdirSync("./os/filesystem/home");
+
 console.log("\nWelcome to adyOS!");
 ezout.info("Now with DEBUG MODE!!!!!!!!!!!!!!!!!!");
 ezout.warn("Debug mode enabled, it may look wacky.");
