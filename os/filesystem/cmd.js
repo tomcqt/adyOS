@@ -142,6 +142,7 @@ async function pacman(arg) {
 // directory system
 // return directory contents
 async function contents(arg) {
+  ezout.info(arg.dir.path);
   let contents = await fs.promises.readdir("./os/filesystem" + arg.dir.path);
   let contents2 = [];
   ezout.info("Contents: " + contents);
@@ -204,18 +205,19 @@ function cd(arg) {
   final_path = "./os/filesystem" + final_path;
 
   goto.forEach((i) => {
+    let sync;
     if (fs.existsSync(final_path + i + "/")) {
-      let sync = fs.statSync(final_path + i + "/");
+      sync = fs.statSync(final_path + i + "/");
     } else {
       ezout.error_nodebug("No such file or directory: " + i);
       return 0;
     }
-    if (sync.isDirectory()) {
+    if (sync.isFile()) {
+      ezout.error_nodebug("Not a directory: " + i);
+      return 0;
+    } else {
       final_path += i;
       final_path += "/";
-    } else {
-      ezout.error_nodebug("Directory has a file of the same name!");
-      return 0;
     }
   });
 
@@ -227,7 +229,7 @@ function cd(arg) {
   ezout.info("fp:" + final_path);
   return {
     output: "Went to " + afs.rewritepath(final_path, arg.usr.username),
-    directory: final_path,
+    directory: final_path.replace("./os/filesystem", ""),
   };
 }
 
