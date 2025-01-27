@@ -1,4 +1,4 @@
-# adyOS
+# adyOS dev.0.2
 
 ### Contains 800+ lines of code!
 
