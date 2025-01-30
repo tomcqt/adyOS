@@ -58,6 +58,40 @@ function system(arg) {
           };
         }
       }
+    } else if (arg.cmds[2] == "locks") {
+      if (arg.cmds[3] == "super") {
+        if (arg.cmds[4] == "on") {
+          // lock super
+          let json = JSON.parse(fs.readFileSync(afs.fsfix("users.json")));
+          json.superlocked = true;
+          fs.writeFileSync(afs.fsfix("users.json"), JSON.stringify(json));
+          ezout.info_nodebug("Locked super at signup.");
+          return 0;
+        } else if (arg.cmds[4] == "off") {
+          // unlock super
+          let json = JSON.parse(fs.readFileSync(afs.fsfix("users.json")));
+          json.superlocked = false;
+          fs.writeFileSync(afs.fsfix("users.json"), JSON.stringify(json));
+          ezout.info_nodebug("Unlocked super at signup.");
+          return 0;
+        }
+      } else if (arg.cmds[3] == "signup") {
+        if (arg.cmds[4] == "on") {
+          // lock signup
+          let json = JSON.parse(fs.readFileSync(afs.fsfix("users.json")));
+          json.signuplocked = true;
+          fs.writeFileSync(afs.fsfix("users.json"), JSON.stringify(json));
+          ezout.info_nodebug("Locked signup.");
+          return 0;
+        } else if (arg.cmds[4] == "off") {
+          // unlock signup
+          let json = JSON.parse(fs.readFileSync(afs.fsfix("users.json")));
+          json.signuplocked = false;
+          fs.writeFileSync(afs.fsfix("users.json"), JSON.stringify(json));
+          ezout.info_nodebug("Locked signup.");
+          return 0;
+        }
+      }
     } else if (arg.cmds[2] == "optional") {
       if (arg.cmds[3] == "applications") {
         if (arg.cmds[4] == "add") {
@@ -305,18 +339,35 @@ async function contents(arg) {
 }
 
 // cd
-function cd(arg) {
-  let goto = arg.cmds[1].split("/").filter((i) => {
-    return i !== "" && i !== "." && i !== ".." && i !== "~";
-  });
-  ezout.info(goto);
+function cd(arg, leave) {
+  let goto;
   let final_path;
-  if (arg.cmds[1].charAt(0) === "~") {
-    final_path = afs.setdefault(arg.usr.username);
-  } else if (arg.cmds[1].charAt(0) === "/") {
-    final_path = "";
-  } else if ([arg.cmds[1].charAt(0), arg.cmds[1].charAt(1)].join("") === "..") {
-    let ps /* path split */ = arg.dir.path.split("/");
+  if (!leave) {
+    goto = arg.cmds[1].split("/").filter((i) => {
+      return i !== "" && i !== "." && i !== ".." && i !== "~";
+    });
+    ezout.info(goto);
+    if (arg.cmds[1].charAt(0) === "~") {
+      final_path = afs.setdefault(arg.usr.username);
+    } else if (arg.cmds[1].charAt(0) === "/") {
+      final_path = "";
+    } else if (
+      [arg.cmds[1].charAt(0), arg.cmds[1].charAt(1)].join("") === ".."
+    ) {
+      let ps /* path split */ = arg.dir.path.split("/");
+      ezout.info(ps);
+      if (ps[ps.length - 1] === "") {
+        ps.pop();
+      }
+      ps.pop();
+      ezout.info(ps);
+      final_path = ps.join("/");
+      ezout.info(final_path);
+    } else {
+      final_path = arg.dir.path;
+    }
+  } else {
+    let ps = arg.dir.path.split("/");
     ezout.info(ps);
     if (ps[ps.length - 1] === "") {
       ps.pop();
@@ -325,27 +376,27 @@ function cd(arg) {
     ezout.info(ps);
     final_path = ps.join("/");
     ezout.info(final_path);
-  } else {
-    final_path = arg.dir.path;
   }
   final_path = "./os/filesystem" + final_path;
 
-  goto.forEach((i) => {
-    let sync;
-    if (fs.existsSync(final_path + i + "/")) {
-      sync = fs.statSync(final_path + i + "/");
-    } else {
-      ezout.error_nodebug("No such file or directory: " + i);
-      return 0;
-    }
-    if (sync.isFile()) {
-      ezout.error_nodebug("Not a directory: " + i);
-      return 0;
-    } else {
-      final_path += i;
-      final_path += "/";
-    }
-  });
+  if (!leave) {
+    goto.forEach((i) => {
+      let sync;
+      if (fs.existsSync(final_path + i + "/")) {
+        sync = fs.statSync(final_path + i + "/");
+      } else {
+        ezout.error_nodebug("No such file or directory: " + i);
+        return 0;
+      }
+      if (sync.isFile()) {
+        ezout.error_nodebug("Not a directory: " + i);
+        return 0;
+      } else {
+        final_path += i;
+        final_path += "/";
+      }
+    });
+  }
 
   /* add slash just in case */
   if (!final_path.endsWith("/")) {
@@ -359,6 +410,106 @@ function cd(arg) {
   };
 }
 
+// read and output file
+function read_(arg) {
+  if (fs.existsSync(afs.fsfix(arg.dir.path) + arg.cmds[1])) {
+    if (fs.statSync(afs.fsfix(arg.dir.path + arg.cmds[1])).isFile()) {
+      if (arg.dir.path != "/" && arg.cmds[1] != "users.json") {
+        fs.readFileSync(
+          afs.fsfix(arg.dir.path) +
+            (arg.cmds[1].charAt(1) == "/" ? arg.cmds[1].splice(1) : arg.cmds[1])
+        )
+          .toString()
+          .split("\n")
+          .forEach((i, j) => {
+            console.log(`${j + 1}: ${i}`);
+          });
+      } else {
+        console.log("1: // nuh uh.");
+      }
+    } else {
+      ezout.warn_nodebug("That is a directory, not a file.");
+    }
+  } else {
+    ezout.error_nodebug("File doesn't exist.");
+  }
+  return 0;
+}
+
+function cdotdot(arg) {
+  return cd(arg, true);
+}
+
+// delete
+function recycle(arg) {
+  if (arg.cmds[1] == "file") {
+    fs.rmSync(afs.fsfix(arg.dir.path) + arg.cmds[2]);
+  } else if (arg.cmds[1] == "folder") {
+    fs.rmdirSync(afs.fsfix(arg.dir.path) + arg.cmds[2]);
+  } else {
+    ezout.warn_nodebug("Invalid syntax.");
+    return 0;
+  }
+  return "Deleted " + arg.cmds[1] + " " + arg.cmds[2] + ".";
+}
+
+// power off
+function power(arg) {
+  if (arg.cmds[1] == "off") {
+    console.log();
+    ezout.info_nodebug("Shutting down");
+    process.exit();
+  } else if (arg.cmds[1] == "sign" && arg.cmds[2] == "out") {
+    return 126;
+  } else {
+    ezout.warn_nodebug("Incorrect syntax.");
+    return 0;
+  }
+}
+
+// write
+function write(arg) {
+  let file = fs
+    .readFileSync(afs.fsfix(arg.dir.path) + arg.cmds[1])
+    .toString()
+    .split("\n");
+  let text_to_write = [...arg.cmds];
+  text_to_write.shift();
+  text_to_write.shift();
+  text_to_write.shift();
+  if (arg.cmds.length == 3) {
+    file.splice(parseInt(arg.cmds[2]), 1);
+  }
+  if (file.length >= arg.cmds[2]) {
+    file[arg.cmds[2] - 1] = text_to_write.join(" ");
+  } else {
+    for (let i = 0; i < arg.cmds[2] - file.length - 1; i++) {
+      file.push("");
+    }
+    file.push(text_to_write.join(" "));
+  }
+  ezout.info(text_to_write.toString());
+  fs.writeFileSync(afs.fsfix(arg.dir.path) + arg.cmds[1], file.join("\n"));
+
+  file.forEach((i, j) => {
+    console.log(`${j + 1}: ${i}`);
+  });
+
+  return 0;
+}
+
+function create(arg) {
+  if (arg.cmds[1] == "file") {
+    fs.writeFileSync(afs.fsfix(arg.dir.path) + arg.cmds[2], "");
+  } else if (arg.cmds[1] == "folder") {
+    fs.mkdirSync(afs.fsfix(arg.dir.path) + arg.cmds[2]);
+  } else {
+    ezout.warn_nodebug("Incorrect syntax.");
+    return 0;
+  }
+  return "Created new " + arg.cmds[1] + " called " + arg.cmds[2] + ".";
+}
+
 // log out
 function exit() {
   return 126;
@@ -370,14 +521,27 @@ let cmd = [
   ["exit", exit],
   ["quit", exit],
   ["system", system],
+  ["erase", clearscreen],
   ["clear", clearscreen],
   ["super", super_],
   ["contents", contents],
   ["ls", contents],
   ["dir", contents],
   ["shutdown", shutdown],
+  ["power", power],
   ["enter", cd],
   ["cd", cd],
+  ["leave", cdotdot],
+  ["read", read_],
+  ["cat", read_],
+  ["recycle", recycle],
+  ["delete", recycle],
+  ["remove", recycle],
+  ["del", recycle],
+  ["rm", recycle],
+  ["write", write],
+  ["create", create],
+  ["new", create],
 ];
 
 // add debug commands if in debug mode
