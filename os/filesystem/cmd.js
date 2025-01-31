@@ -301,11 +301,19 @@ async function pacman(arg) {
 
 // directory system
 // return directory contents
+// contents
 async function contents(arg) {
   ezout.info(arg.dir.path);
   let contents = await fs.promises.readdir("./os/filesystem" + arg.dir.path);
   let contents2 = [];
   ezout.info("Contents: " + contents);
+
+  // remove hidden folders & files before anything happens
+  contents.forEach((i, j) => {
+    if (i.charAt(0) === ".") {
+      contents.splice(j, 1);
+    }
+  });
 
   console.log(
     "Contents of " +
@@ -414,7 +422,11 @@ function cd(arg, leave) {
 function read_(arg) {
   if (fs.existsSync(afs.fsfix(arg.dir.path) + arg.cmds[1])) {
     if (fs.statSync(afs.fsfix(arg.dir.path + arg.cmds[1])).isFile()) {
-      if (arg.dir.path != "/" && arg.cmds[1] != "users.json") {
+      ezout.info(arg.dir.path);
+      ezout.info(arg.cmds[1]);
+      if (arg.dir.path == "/" && arg.cmds[1] == "users.json") {
+        console.log("1: // nuh uh.");
+      } else {
         fs.readFileSync(
           afs.fsfix(arg.dir.path) +
             (arg.cmds[1].charAt(1) == "/" ? arg.cmds[1].splice(1) : arg.cmds[1])
@@ -424,8 +436,6 @@ function read_(arg) {
           .forEach((i, j) => {
             console.log(`${j + 1}: ${i}`);
           });
-      } else {
-        console.log("1: // nuh uh.");
       }
     } else {
       ezout.warn_nodebug("That is a directory, not a file.");
@@ -436,6 +446,7 @@ function read_(arg) {
   return 0;
 }
 
+// cd ..
 function cdotdot(arg) {
   return cd(arg, true);
 }
@@ -467,7 +478,7 @@ function power(arg) {
   }
 }
 
-// write
+// write file
 function write(arg) {
   let file = fs
     .readFileSync(afs.fsfix(arg.dir.path) + arg.cmds[1])
@@ -498,6 +509,12 @@ function write(arg) {
   return 0;
 }
 
+// append to file
+function append(arg) {
+  return 0;
+}
+
+// create new file/folder
 function create(arg) {
   if (arg.cmds[1] == "file") {
     fs.writeFileSync(afs.fsfix(arg.dir.path) + arg.cmds[2], "");

@@ -129,6 +129,9 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# JetBrains WebStorm
+.idea
+
 # files that should not be shared
 users.json
 os/filesystem/home/
