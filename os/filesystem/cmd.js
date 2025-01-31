@@ -7,7 +7,7 @@ import * as childprocess from "child_process";
 import * as afs from "./afsdriver.js";
 import * as https from "https";
 
-// Exit Codes:
+// Exit Codes
 // 0 - output nothing
 // 126 - log out
 
@@ -35,13 +35,15 @@ if (fs.existsSync(afs.fsfix("sys/opt.json"))) {
   internal_update_opt_json();
 }
 
+// its echo!
 function echo(arg) {
   arg.cmds.shift();
   return arg.cmds.join(" ");
 }
 
+// system settings basically
 function system(arg) {
-  if (arg.cmds[0] == "super") {
+  if (arg.cmds[0] == "super" || arg.cmds[0] == "sudo") {
     if (arg.cmds[2] == "info") {
       if (arg.cmds[3] == "name") {
         if (arg.cmds[4] == "get") {
@@ -186,6 +188,38 @@ function system(arg) {
           }
         }
       }
+    } else if (arg.cmds[2] == "users") {
+      let users = JSON.parse(fs.readFileSync("./os/filesystem/users.json"));
+      let userindex = 0;
+      users.users.forEach((i, j) => {
+        if (i.username == arg.cmd.split('"')[1]) {
+          userindex = j;
+        }
+      });
+      let splitted = arg.cmd.split('"')[2].split(" ");
+      ezout.info(arg.cmd.split('"'));
+      ezout.info(splitted);
+      if (userindex != 0) {
+        if (splitted[1] == "super") {
+          if (splitted[2] == "on") {
+            users.users[userindex].sudo = true;
+            fs.writeFileSync(
+              "./os/filesystem/users.json",
+              JSON.stringify(users)
+            );
+            return "Enabled Super for user.";
+          } else if (splitted[2] == "off") {
+            users.users[userindex].sudo = false;
+            fs.writeFileSync(
+              "./os/filesystem/users.json",
+              JSON.stringify(users)
+            );
+            return "Disabled Super for user.";
+          }
+        }
+      } else {
+        return "[ ERROR ] No such user!";
+      }
     }
     return "[ ERROR ] Argument not found!";
   } else {
@@ -193,6 +227,39 @@ function system(arg) {
   }
 }
 
+// user settings (doesnt need super)
+async function user(arg) {
+  let dat = JSON.parse(fs.readFileSync("./os/filesystem/users.json"));
+
+  let index = 0;
+  dat.users.forEach((i, j) => {
+    if (i.username == arg.usr.username) {
+      index = j;
+    }
+  });
+
+  let usr;
+  if (index == 0) {
+    return "You don't exist. I have no idea how you did this.";
+  } else {
+    usr = dat.users[index];
+  }
+
+  if (arg.cmds[1] == "password") {
+    let pwd = await read({
+      prompt: "Password: ",
+      silent: true,
+      replace: "•",
+    });
+    let hash = crypto.createHash("sha256").update(pwd).digest("base64");
+    dat.users[index].password = hash;
+    fs.writeFileSync("./os/filesystem/users.json", JSON.stringify(dat));
+    return "Changed password.";
+  }
+  return "[ WARN ] Invalid syntax.";
+}
+
+// sudo
 async function super_(arg) {
   ezout.info(lastsuper);
   let usersdata = JSON.parse(
@@ -245,6 +312,7 @@ async function super_(arg) {
   return 0;
 }
 
+// clear screen
 function clearscreen() {
   console.clear();
   return 0;
@@ -456,12 +524,17 @@ function recycle(arg) {
   if (arg.cmds[1] == "file") {
     fs.rmSync(afs.fsfix(arg.dir.path) + arg.cmds[2]);
   } else if (arg.cmds[1] == "folder") {
-    fs.rmdirSync(afs.fsfix(arg.dir.path) + arg.cmds[2]);
+    if (fs.readdirSync(afs.fsfix(arg.dir.path) + arg.cmds[2]).length === 0) {
+      fs.rmdirSync(afs.fsfix(arg.dir.path) + arg.cmds[2]);
+    } else {
+      ezout.error_nodebug("Folder is not empty.");
+      return 0;
+    }
   } else {
     ezout.warn_nodebug("Invalid syntax.");
     return 0;
   }
-  return "Deleted " + arg.cmds[1] + " " + arg.cmds[2] + ".";
+  return "Recycled " + arg.cmds[1] + " " + arg.cmds[2] + ".";
 }
 
 // power off
@@ -480,37 +553,61 @@ function power(arg) {
 
 // write file
 function write(arg) {
-  let file = fs
-    .readFileSync(afs.fsfix(arg.dir.path) + arg.cmds[1])
-    .toString()
-    .split("\n");
-  let text_to_write = [...arg.cmds];
-  text_to_write.shift();
-  text_to_write.shift();
-  text_to_write.shift();
-  if (arg.cmds.length == 3) {
-    file.splice(parseInt(arg.cmds[2]), 1);
-  }
-  if (file.length >= arg.cmds[2]) {
-    file[arg.cmds[2] - 1] = text_to_write.join(" ");
-  } else {
-    for (let i = 0; i < arg.cmds[2] - file.length - 1; i++) {
-      file.push("");
+  if (arg.cmds[1] != "users.json" && arg.dir.path != "/") {
+    let file = fs
+      .readFileSync(afs.fsfix(arg.dir.path) + arg.cmds[1])
+      .toString()
+      .split("\n");
+    let text_to_write = [...arg.cmds];
+    text_to_write.shift();
+    text_to_write.shift();
+    text_to_write.shift();
+    if (file.length >= arg.cmds[2]) {
+      file[arg.cmds[2] - 1] = text_to_write.join(" ");
+    } else {
+      for (let i = 0; i < arg.cmds[2] - file.length - 1; i++) {
+        file.push("");
+      }
+      file.push(text_to_write.join(" "));
     }
-    file.push(text_to_write.join(" "));
-  }
-  ezout.info(text_to_write.toString());
-  fs.writeFileSync(afs.fsfix(arg.dir.path) + arg.cmds[1], file.join("\n"));
+    if (arg.cmds.length == 3) {
+      file.splice(parseInt(arg.cmds[2] - 1), 1);
+    }
+    ezout.info(text_to_write.toString());
+    fs.writeFileSync(afs.fsfix(arg.dir.path) + arg.cmds[1], file.join("\n"));
 
-  file.forEach((i, j) => {
-    console.log(`${j + 1}: ${i}`);
-  });
+    file.forEach((i, j) => {
+      console.log(`${j + 1}: ${i}`);
+    });
+  } else {
+    return "1: // nuh uh.";
+  }
 
   return 0;
 }
 
 // append to file
 function append(arg) {
+  if (arg.cmds[1] != "users.json" && arg.dir.path != "/") {
+    let file = fs
+      .readFileSync(afs.fsfix(arg.dir.path) + arg.cmds[1])
+      .toString()
+      .split("\n");
+    let text_to_write = [...arg.cmds];
+    text_to_write.shift();
+    text_to_write.shift();
+    text_to_write.shift();
+    file.splice(arg.cmds[2] - 1, 0, text_to_write.join(" "));
+    ezout.info(text_to_write.toString());
+    fs.writeFileSync(afs.fsfix(arg.dir.path) + arg.cmds[1], file.join("\n"));
+
+    file.forEach((i, j) => {
+      console.log(`${j + 1}: ${i}`);
+    });
+  } else {
+    return "1: // nuh uh.";
+  }
+
   return 0;
 }
 
@@ -532,6 +629,45 @@ function exit() {
   return 126;
 }
 
+// run js files!
+async function run(arg) {
+  ezout.info("node " + afs.fsfix(arg.dir.path) + arg.cmds[1]);
+  let process = childprocess.spawn("node " + arg.cmds[1], {
+    cwd: afs.fsfix(arg.dir.path),
+    shell: true,
+  });
+  process.stdout.on("data", (data) => {
+    console.log(data.toString());
+  });
+  await new Promise((resolve) => {
+    process.on("close", resolve);
+  });
+  return 0;
+}
+
+async function download(arg) {
+  if (arg.cmds.length === 3) {
+    let file = fs.createWriteStream(afs.fsfix(arg.dir.path) + arg.cmds[2]);
+    let req = https.get(arg.cmds[1], (res) => {
+      res.pipe(file);
+
+      // after download completed close filestream
+      file.on("finish", () => {
+        file.close();
+        console.log("Downloaded file.");
+      });
+    });
+
+    await new Promise((resolve) => {
+      file.on("finish", resolve);
+    });
+    return 0;
+  } else {
+    ezout.warn_nodebug("Invalid syntax.");
+    return 0;
+  }
+}
+
 // [name, function]
 let cmd = [
   ["echo", echo],
@@ -541,6 +677,7 @@ let cmd = [
   ["erase", clearscreen],
   ["clear", clearscreen],
   ["super", super_],
+  ["sudo", super_],
   ["contents", contents],
   ["ls", contents],
   ["dir", contents],
@@ -559,6 +696,14 @@ let cmd = [
   ["write", write],
   ["create", create],
   ["new", create],
+  ["append", append],
+  ["add", append],
+  ["open", run],
+  ["run", run],
+  ["start", run],
+  ["download", download],
+  ["get", download],
+  ["user", user],
 ];
 
 // add debug commands if in debug mode
