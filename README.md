@@ -28,3 +28,7 @@ A full command line pseudo-operating system written entirely in JavaScript using
 - Added file modification
 - Added the ability to change your password
 - Added the ability to give and take super priviledges from accounts.
+
+### dev.0.4
+
+- Fixed adyPM

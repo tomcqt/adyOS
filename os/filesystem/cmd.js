@@ -350,16 +350,10 @@ async function pacman(arg) {
       console.log("AdyPM (Package Install Mode)");
       let pkg = prompt.slice(1);
       ezout.working_nodebug("Checking repos...");
-      repos.repos.forEach((item, index) => {
-        let code;
-
-        https.get(item.url + "adypm.json", (res) => {
-          res.on("end", () => {
-            code = res.statusCode;
-          });
+      repos.repos.forEach(async (item, index) => {
+        let req = https.get(item.url + "adypm.json", function (res) {
+          console.log(res.statusCode);
         });
-
-        ezout.info(code);
       });
     }
   }
@@ -645,6 +639,7 @@ async function run(arg) {
   return 0;
 }
 
+// download files from the internet
 async function download(arg) {
   if (arg.cmds.length === 3) {
     let file = fs.createWriteStream(afs.fsfix(arg.dir.path) + arg.cmds[2]);
