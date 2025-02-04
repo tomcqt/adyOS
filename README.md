@@ -1,10 +1,6 @@
 # adyOS dev.0.4 (Development Branch)
 
-<<<<<<< HEAD
-### Contains 1.3k+ lines of code!
-=======
 ### Contains 1.4k+ lines of code!
->>>>>>> 7c681d112c7a3771f7d3a49c1ef040f8357832c5
 
 A full command line pseudo-operating system written entirely in JavaScript using Node.JS.
 
