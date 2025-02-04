@@ -140,7 +140,7 @@ function system(arg) {
               );
               repos.repos.push({
                 name: "main",
-                url: "https://raw.tomcat.sh/adyos-default-repo/master/",
+                url: "https://raw.githubusercontent.com/tomcqt/adyos-default-repo/master/",
               });
 
               fs.writeFileSync(
@@ -338,23 +338,60 @@ async function pacman(arg) {
       afs.fsfix(afs.getdefault(arg.usr.username) + ".adypm/repos.json")
     )
   );
+
+  // create temp directory to save files if it doesnt already exist
+  if (!fs.existsSync(afs.fsfix(arg.dir.home) + ".adypm/temp")) {
+    fs.mkdirSync(afs.fsfix(arg.dir.home) + ".adypm/temp");
+  }
+
   if (arg.cmds.length == 1) {
     console.log("AdyPM      - AdyOS Package Manager");
     console.log("+[package] - Install Package");
     console.log("-[package] - Uninstall Package");
     console.log("/[repo]    - Add Repository");
     console.log("\\[repo]    - Remove Repository");
+
+    console.log("Also possible:");
+    console.log("@ - Clear temp files");
     return 0;
   } else {
     if (prompt.charAt(0) == "+") {
+      let files = [];
       console.log("AdyPM (Package Install Mode)");
       let pkg = prompt.slice(1);
+
       ezout.working_nodebug("Checking repos...");
       repos.repos.forEach(async (item, index) => {
-        let req = https.get(item.url + "adypm.json", function (res) {
-          console.log(res.statusCode);
+        let num = Math.round(Math.random() * 99999999999999999999).toString();
+        files.push(num);
+        let file = fs.createWriteStream(
+          afs.fsfix(arg.dir.home) + ".adypm/temp/" + num + ".json"
+        );
+        let req = https.get(item.url + "adypm.json", (res) => {
+          res.pipe(file);
+
+          // after download completed close filestream
+          file.on("finish", () => {
+            file.close();
+          });
+        });
+        await new Promise((resolve) => {
+          file.on("finish", resolve);
         });
       });
+      ezout.info(files);
+
+      // files.forEach();
+
+      ezout.done_nodebug("Checking repos...");
+      return 0;
+    } else if (prompt.charAt(0) == "@") {
+      console.log("AdyPM (Clear Cache Mode)");
+      fs.rmSync(afs.fsfix(arg.dir.home) + ".adypm/temp", {
+        recursive: true,
+      });
+      ezout.info_nodebug("Cleared cache.");
+      return 0;
     }
   }
   ezout.error_nodebug("Invalid syntax");

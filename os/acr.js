@@ -48,7 +48,11 @@ async function start(username) {
               username: username,
               systemname: systemname,
             },
-            dir: { path: path, pathrw: pathrewritten },
+            dir: {
+              path: path,
+              pathrw: pathrewritten,
+              home: afs.setdefault(username),
+            },
             version: version,
           });
           if (result instanceof Promise) {
