@@ -2,8 +2,6 @@
 
 ### Contains 1.5k+ lines of code!
 
-[//]: # Update the line above ^^^ using `./lines.sh`!
-
 A full command line pseudo-operating system written entirely in JavaScript using Node.JS.
 
 ### [Read the docs!](https://ady.tomcat.sh/)
