@@ -4,7 +4,7 @@
 
 A full command line pseudo-operating system written entirely in JavaScript using Node.JS.
 
-### [Read the docs!](https://ady.tomcat.sh/)
+### [Check out the website!](https://ady.best/) (Also contains installation instructions)
 
 ## Changelog
 
