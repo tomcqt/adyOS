@@ -625,6 +625,7 @@ function exit() {
 
 // run js files!
 async function run(arg) {
+  console.log('Running file "' + arg.cmds[1] + '"...\n');
   ezout.info("node " + afs.fsfix(arg.dir.path) + arg.cmds[1]);
   let process = childprocess.spawn("node " + arg.cmds[1], {
     cwd: afs.fsfix(arg.dir.path),
