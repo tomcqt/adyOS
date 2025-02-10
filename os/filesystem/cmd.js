@@ -340,8 +340,8 @@ async function pacman(arg) {
   );
 
   // create temp directory to save files if it doesnt already exist
-  if (!fs.existsSync(afs.fsfix(arg.dir.home) + ".adypm/temp")) {
-    fs.mkdirSync(afs.fsfix(arg.dir.home) + ".adypm/temp");
+  if (!fs.existsSync(afs.fsfix(arg.dir.home) + ".adypm/tmp")) {
+    fs.mkdirSync(afs.fsfix(arg.dir.home) + ".adypm/tmp");
   }
 
   if (arg.cmds.length == 1) {
@@ -352,7 +352,7 @@ async function pacman(arg) {
     console.log("\\[repo]    - Remove Repository");
 
     console.log("Also possible:");
-    console.log("@ - Clear temp files");
+    console.log("@ - Clear temporary files");
     return 0;
   } else {
     if (prompt.charAt(0) == "+") {
@@ -361,11 +361,11 @@ async function pacman(arg) {
       let pkg = prompt.slice(1);
 
       ezout.working_nodebug("Checking repos...");
-      repos.repos.forEach(async (item, index) => {
+      repos.repos.forEach(async (item) => {
         let num = Math.round(Math.random() * 99999999999999999999).toString();
         files.push(num);
         let file = fs.createWriteStream(
-          afs.fsfix(arg.dir.home) + ".adypm/temp/" + num + ".json"
+          afs.fsfix(arg.dir.home) + ".adypm/tmp/" + num + ".json"
         );
         let req = https.get(item.url + "adypm.json", (res) => {
           res.pipe(file);
@@ -379,15 +379,16 @@ async function pacman(arg) {
           file.on("finish", resolve);
         });
       });
-      ezout.info(files);
 
-      // files.forEach();
+      files.forEach((item) => {
+        ezout.info(item);
+      });
 
       ezout.done_nodebug("Checking repos...");
       return 0;
     } else if (prompt.charAt(0) == "@") {
       console.log("AdyPM (Clear Cache Mode)");
-      fs.rmSync(afs.fsfix(arg.dir.home) + ".adypm/temp", {
+      fs.rmSync(afs.fsfix(arg.dir.home) + ".adypm/tmp", {
         recursive: true,
       });
       ezout.info_nodebug("Cleared cache.");
