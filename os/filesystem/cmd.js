@@ -361,7 +361,7 @@ async function pacman(arg) {
       let pkg = prompt.slice(1);
 
       ezout.working_nodebug("Checking repos...");
-      repos.repos.forEach(async (item) => {
+      for (let item of repos.repos) {
         let num = Math.round(Math.random() * 99999999999999999999).toString();
         files.push(num);
         let file = fs.createWriteStream(
@@ -378,13 +378,13 @@ async function pacman(arg) {
         await new Promise((resolve) => {
           file.on("finish", resolve);
         });
-      });
+      }
 
       files.forEach((item) => {
         ezout.info(item);
 
-        file = fs.readFileSync(
-          afs.fsfix(arg.dir.home) + ".adypm/tmp/" + num + ".json",
+        let file = fs.readFileSync(
+          afs.fsfix(arg.dir.home) + ".adypm/tmp/" + item + ".json",
           "utf-8"
         );
 
