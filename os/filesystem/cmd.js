@@ -382,6 +382,13 @@ async function pacman(arg) {
 
       files.forEach((item) => {
         ezout.info(item);
+
+        file = fs.readFileSync(
+          afs.fsfix(arg.dir.home) + ".adypm/tmp/" + num + ".json",
+          "utf-8"
+        );
+
+        console.log(file);
       });
 
       ezout.done_nodebug("Checking repos...");
