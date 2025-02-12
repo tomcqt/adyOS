@@ -397,6 +397,11 @@ async function pacman(arg) {
       ezout.info(real);
 
       ezout.done_nodebug("Updating cached repos");
+
+      for (let repo of real) {
+        ezout.info_nodebug('Checking in "' + repo[1] + '"');
+      }
+
       return 0;
     } else if (prompt.charAt(0) == "@") {
       console.log("AdyPM (Clear Cache Mode)");

@@ -5,6 +5,7 @@ import * as afs from "./filesystem/afsdriver.js";
 import * as cmd from "./filesystem/cmd.js";
 import * as ezout from "./ezout.js";
 import * as fs from "fs";
+import * as debug from "../debug.js";
 
 async function start(username) {
   // acr.start();
@@ -32,8 +33,13 @@ async function start(username) {
 
     prompt = `${username}@${systemname} ${pathrewritten} $ `;
 
-    command = await input.asks(prompt);
-    commandsplit = command.split(" ");
+    if (!debug.autocmd.on) {
+      command = await input.asks(prompt);
+      commandsplit = command.split(" ");
+    } else {
+      command = debug.autocmd.command;
+      commandsplit = debug.autocmd.command.split(" ");
+    }
 
     ezout.info(command);
     ezout.info(commandsplit);
@@ -90,6 +96,9 @@ async function start(username) {
       if (command != "") {
         ezout.error_nodebug(`Command (${commandsplit[0]}) not found.`);
       }
+    }
+    if (debug.autocmd.on) {
+      break;
     }
   }
 }

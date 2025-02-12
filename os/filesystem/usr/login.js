@@ -143,11 +143,15 @@ async function show() {
 choose then press enter`;
 
     console.log(text);
-    q = await read({
-      prompt: "",
-      silent: true,
-      replace: "",
-    });
+    if (!debug.autocmd.on) {
+      q = await read({
+        prompt: "",
+        silent: true,
+        replace: "",
+      });
+    } else {
+      q = "";
+    }
 
     if (q.toLowerCase() == "l" && allowed[0]) {
       // login screen
@@ -318,6 +322,31 @@ choose then press enter`;
         console.log("what the sigma?");
       }
       await delay.wait(1000);
+    } else if (debug.autocmd.on) {
+      let password_hashed = crypto
+        .createHash("sha256")
+        .update(debug.autocmd.user.password)
+        .digest("base64");
+      let itemnum;
+      usersdata.users.forEach((item, index) => {
+        if (item.username == debug.autocmd.user.username) {
+          itemnum = index;
+        }
+      });
+      if (itemnum == null) {
+        ezout.error_nodebug("Account doesn't exist!");
+        await delay.wait(1000);
+      } else {
+        if (usersdata.users[itemnum].password == password_hashed) {
+          ezout.info("Logged in as " + debug.autocmd.user.username);
+          ezout.done("Checking for account");
+          ezout.done("Logging in");
+          return debug.autocmd.user.username;
+        } else {
+          ezout.error_nodebug("Incorrect password!");
+          await delay.wait(1000);
+        }
+      }
     } else if (q.toLowerCase() == "l" && !allowed[0]) {
       ezout.warn_nodebug("That option is disabled.");
       await delay.wait(1000);
