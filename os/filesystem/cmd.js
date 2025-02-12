@@ -360,7 +360,7 @@ async function pacman(arg) {
       console.log("AdyPM (Package Install Mode)");
       let pkg = prompt.slice(1);
 
-      ezout.working_nodebug("Checking repos...");
+      ezout.working_nodebug("Updating cached repos");
       for (let item of repos.repos) {
         let num = Math.round(Math.random() * 99999999999999999999).toString();
         files.push(num);
@@ -380,6 +380,8 @@ async function pacman(arg) {
         });
       }
 
+      let real = [];
+
       files.forEach((item) => {
         ezout.info(item);
 
@@ -388,10 +390,13 @@ async function pacman(arg) {
           "utf-8"
         );
 
-        console.log(file);
+        if (JSON.parse(file).name) {
+          real.push([item + ".json", JSON.parse(file).name]);
+        }
       });
+      ezout.info(real);
 
-      ezout.done_nodebug("Checking repos...");
+      ezout.done_nodebug("Updating cached repos");
       return 0;
     } else if (prompt.charAt(0) == "@") {
       console.log("AdyPM (Clear Cache Mode)");
