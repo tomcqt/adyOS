@@ -2,16 +2,16 @@
 let debug = false;
 // DEBUG MODE
 
-// autocmd
+// AUTO COMMAND
 let autocmd = {
-  on: true,
+  on: false,
   command: "adypm +asdf",
   user: {
     username: "tomcat",
     password: "guilford",
   },
 };
-// autocmd
+// AUTO COMMAND
 
 // Debug mode can also be enabled by using `npm run debug`
 

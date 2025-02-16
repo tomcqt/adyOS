@@ -391,15 +391,44 @@ async function pacman(arg) {
         );
 
         if (JSON.parse(file).name) {
-          real.push([item + ".json", JSON.parse(file).name]);
+          real.push([
+            afs.fsfix(arg.dir.home) + ".adypm/tmp/" + item + ".json",
+            JSON.parse(file).name,
+          ]);
         }
       });
       ezout.info(real);
 
       ezout.done_nodebug("Updating cached repos");
 
+      let repo_with_pkg;
       for (let repo of real) {
         ezout.info_nodebug('Checking in "' + repo[1] + '"');
+        let num = Math.round(Math.random() * 99999999999999999999).toString();
+        let file = fs.createWriteStream(
+          afs.fsfix(arg.dir.home) + ".adypm/tmp/" + num + ".json"
+        );
+        let req = https.get(item.url + "repos/pkg.json", (res) => {
+          res.pipe(file);
+
+          // after download completed close filestream
+          file.on("finish", () => {
+            file.close();
+          });
+        });
+        await new Promise((resolve) => {
+          file.on("finish", resolve);
+        });
+        let jsondata = JSON.parse(
+          fs.readFileSync(
+            afs.fsfix(arg.dir.home) + ".adypm/tmp/" + num + ".json"
+          )
+        );
+        for (let package_ of jsondata.packages) {
+          if (package_.folder == pkg) {
+            repo_with_pkg = [...repo];
+          }
+        }
       }
 
       return 0;
