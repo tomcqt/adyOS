@@ -21,7 +21,7 @@ async function start(username) {
       .split(".")[0]
       .split(" ")
       .reverse()
-      .join(" on ")} (EST)\n`
+      .join(" on ")} (UTC)\n`
   );
 
   let path = afs.setdefault(username);
