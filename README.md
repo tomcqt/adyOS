@@ -33,3 +33,4 @@ A full command line pseudo-operating system written entirely in JavaScript using
 
 - Wrote adyPM
 - Fixed `run` command.
+- Update some login things.
