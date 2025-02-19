@@ -10,7 +10,10 @@ import * as debug from "../debug.js";
 async function start(username) {
   // acr.start();
 
-  console.log(`\nWelcome, ${username}!`);
+  if (!debug.debug) {
+    console.clear();
+  }
+  console.log(`Welcome, ${username}!`);
   console.log(
     `The system time is: ${new Date()
       .toISOString()
@@ -18,7 +21,7 @@ async function start(username) {
       .split(".")[0]
       .split(" ")
       .reverse()
-      .join(" on ")}\n`
+      .join(" on ")} (EST)\n`
   );
 
   let path = afs.setdefault(username);
