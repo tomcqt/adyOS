@@ -748,6 +748,15 @@ async function download(arg) {
   }
 }
 
+// switch workspaces
+function workspace(arg) {
+  if (arg.cmds.length >= 2) {
+    return "unimplemented!";
+  } else {
+    return "Workspace\nUsage:\nworkspaces initialise [name]   - Initialises a workspace called [name]\nworkspaces enter [name]        - Enters the workspace called [name]\nworkspaces uninitialise [name] - Remove the workspace called [name]";
+  }
+}
+
 // [name, function]
 let cmd = [
   ["echo", echo],
@@ -784,6 +793,11 @@ let cmd = [
   ["download", download],
   ["get", download],
   ["user", user],
+  ["workspaces", workspace],
+  ["workspace", workspace],
+  ["ws", workspace],
+  ["space", workspace],
+  ["spaces", workspace],
 ];
 
 // add debug commands if in debug mode
