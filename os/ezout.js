@@ -57,6 +57,12 @@ function inverted_text(text) {
   console.log(`\x1b[7m${text}\n\x1b[0m`, "");
 }
 
+function center(text) {
+  const width = process.stdout.columns || 80; // Default to 80 if undefined
+  const padding = Math.max(0, Math.floor((width - text.length) / 2));
+  return " ".repeat(padding) + text;
+}
+
 export {
   info,
   error,
@@ -69,4 +75,5 @@ export {
   working_nodebug,
   done_nodebug,
   inverted_text,
+  center,
 };
