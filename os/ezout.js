@@ -53,6 +53,10 @@ function done_nodebug(text) {
   console.log("[ DONE ] " + text);
 }
 
+function inverted_text(text) {
+  console.log(`\x1b[7m${text}\n\x1b[0m`, "");
+}
+
 export {
   info,
   error,
@@ -64,4 +68,5 @@ export {
   warn_nodebug,
   working_nodebug,
   done_nodebug,
+  inverted_text,
 };
