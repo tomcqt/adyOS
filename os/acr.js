@@ -9,10 +9,23 @@ import * as debug from "../debug.js";
 
 async function start(username) {
   // acr.start();
-
+  // clear screen
   if (!debug.debug) {
     console.clear();
   }
+
+  // initialise variables
+  let path = afs.setdefault(username);
+  let pathrewritten, prompt, command, commandsplit, systemname; // define variables here
+
+  systemname = await afs.getsystemname();
+
+  let version = fs.readFileSync("./os/version", "utf-8"); // read the version file
+
+  // awesome user info topbar
+  ezout.inverted_text(ezout.center(`${username} @ ${systemname}`));
+
+  // welcome text
   console.log(`Welcome, ${username}!`);
   console.log(
     `The system time is: ${new Date()
@@ -24,32 +37,34 @@ async function start(username) {
       .join(" on ")} (UTC)\n`
   );
 
-  let path = afs.setdefault(username);
-  let pathrewritten, prompt, command, commandsplit, systemname; // define variables here
-
-  systemname = await afs.getsystemname();
-
-  let version = fs.readFileSync("./os/version", "utf-8"); // read the version file
-
+  // main command process
   while (true) {
+    // rewrites the path for the prompt
     pathrewritten = afs.rewritepath(path.toString(), username);
 
+    // generates the prompt text
     prompt = `${username}@${systemname} ${pathrewritten} $ `;
 
+    // prompts for the command and handles autocmd automatic command execution.
     if (!debug.autocmd.on) {
+      // normal prompt
       command = await input.asks(prompt);
       commandsplit = command.split(" ");
     } else {
+      // with autocmd command execution
       command = debug.autocmd.command;
       commandsplit = debug.autocmd.command.split(" ");
     }
 
+    // sends debug info if in debug mode
     ezout.info(command);
     ezout.info(commandsplit);
 
+    // checks if command exists
     if (cmd.cmd.find((item) => item[0] === commandsplit[0])) {
       for (let i = 0; i < cmd.cmd.length; i++) {
         if (cmd.cmd[i][0] === commandsplit[0]) {
+          // run command and store result
           let result = await cmd.cmd[i][1]({
             cmd: command,
             cmds: commandsplit,
@@ -64,12 +79,17 @@ async function start(username) {
             },
             version: version,
           });
+          // print result data to screen and handle return codes.
+          // if its an await function turn it into a string
           if (result instanceof Promise) {
             result.then((output) => (result = output));
           }
+          // exit (quit) code
           if (result === 126) {
             return 126;
           }
+          // the thing that prints it
+          // if it has userdata
           if (typeof result != "string" && typeof result != "number") {
             if (result.hasOwnProperty("userdata")) {
               if (result.userdata.hasOwnProperty("username")) {
@@ -83,11 +103,13 @@ async function start(username) {
             if (result.hasOwnProperty("directory")) {
               path = result.directory;
             }
-
+            // also check if we should output something
             if (result.output !== 0) {
               console.log(result.output);
             }
+            // if it doesnt
           } else {
+            // and check if we should output something
             if (result !== 0) {
               console.log(result);
             }
@@ -96,10 +118,12 @@ async function start(username) {
         }
       }
     } else {
+      // and handle if it doesnt exist
       if (command != "") {
         ezout.error_nodebug(`Command (${commandsplit[0]}) not found.`);
       }
     }
+    // shut down after running command in autocmd mode
     if (debug.autocmd.on) {
       break;
     }
