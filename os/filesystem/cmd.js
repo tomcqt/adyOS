@@ -753,7 +753,12 @@ function workspace(arg) {
   if (arg.cmds.length >= 2) {
     return "unimplemented!";
   } else {
-    return "Workspace\nUsage:\nworkspaces initialise [name]   - Initialises a workspace called [name]\nworkspaces enter [name]        - Enters the workspace called [name]\nworkspaces uninitialise [name] - Remove the workspace called [name]";
+    return "adyOS Spaces\
+\
+Example Usage:\
+workspaces initialise [name]   - Initialises a workspace called [name]\
+workspaces enter [name]        - Enters the workspace called [name]\
+workspaces uninitialise [name] - Remove the workspace called [name]";
   }
 }
 
