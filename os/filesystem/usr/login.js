@@ -136,11 +136,17 @@ async function show() {
       signup = "S. disabled (sign up)";
     }
 
-    let text = `   ┓  ┏┓┏┓ ${login}
-┏┓┏┫┓┏┃┃┗┓ ${signup}
-┗┻┗┻┗┫┗┛┗┛ Q. quit
-     ┛    
-choose then press enter`;
+    let pallette = [
+      ezout.colours.yellow,
+      ezout.colours.magenta,
+      ezout.colours.cyan,
+    ];
+
+    let text = `${pallette[0]}   ┓  ┏┓┏┓ ${ezout.colours.reset}${login}
+${pallette[1]}┏┓┏┫┓┏┃┃┗┓ ${ezout.colours.reset}${signup}
+${pallette[2]}┗┻┗┻┗┫┗┛┗┛ ${ezout.colours.reset}Q. quit
+${pallette[2]}     ┛    ${ezout.colours.reset}
+${ezout.colours.dim}choose then press enter${ezout.colours.reset}`;
 
     console.log(text);
     if (!debug.autocmd.on) {

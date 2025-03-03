@@ -76,15 +76,17 @@ async function start(username) {
   });
 
   // welcome text
-  console.log(`Welcome, ${username}!`);
   console.log(
-    `The system time is: ${new Date()
+    `Welcome, ${ezout.colours.bold}${username}${ezout.colours.reset}!`
+  );
+  console.log(
+    `The system time is ${ezout.colours.bold}${new Date()
       .toISOString()
       .replace("T", " ")
       .split(".")[0]
       .split(" ")
       .reverse()
-      .join(" on ")} (UTC)\n`
+      .join(" on ")}${ezout.colours.reset} (UTC)\n`
   );
 
   // main command process
@@ -93,7 +95,7 @@ async function start(username) {
     pathrewritten = afs.rewritepath(path.toString(), username);
 
     // generates the prompt text
-    prompt = `${username}@${systemname} ${pathrewritten} $ `;
+    prompt = `${ezout.colours.bold}${username}@${systemname} ${pathrewritten} $ ${ezout.colours.reset}`;
 
     // prompts for the command and handles autocmd automatic command execution.
     if (!debug.autocmd.on) {
