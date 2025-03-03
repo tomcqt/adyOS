@@ -3,7 +3,7 @@
 
 ### Contains 1.5k+ lines of code!
 
-A full command line pseudo-operating system written entirely in JavaScript using Node.JS.
+A full command line pseudo-operating system written entirely in JavaScript using Node.JS. You can write your own code using the built in editor, download packages using the package manager, and multitask using the workspaces functionality, all from the command line. This project is completely open source and you can help make it better by commiting your own code.
 
 ### [Check out the website!](https://ady.best/) (Also contains installation instructions)
 
