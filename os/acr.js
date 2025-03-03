@@ -138,6 +138,7 @@ async function start(username) {
             usr: {
               username: username,
               systemname: systemname,
+              timezone: afs.gettimezone(),
             },
             dir: {
               path: path,
@@ -164,6 +165,16 @@ async function start(username) {
               }
               if (result.userdata.hasOwnProperty("systemname")) {
                 systemname = result.userdata.systemname;
+              }
+              if (result.userdata.hasOwnProperty("timezone")) {
+                let jsondat = JSON.parse(
+                  fs.readFileSync(afs.fsfix("users.json"))
+                );
+                jsondat.timezone = result.userdata.timezone;
+                fs.writeFileSync(
+                  afs.fsfix("users.json"),
+                  JSON.stringify(jsondat)
+                );
               }
             }
 

@@ -59,6 +59,20 @@ function system(arg) {
             },
           };
         }
+      } else if (arg.cmds[3] == "user") {
+        if (arg.cmds[4] == "timezone") {
+          if (arg.cmds[5] == "get") {
+            console.log("Current timezone: " + arg.usr.timezone.toString());
+            return 0;
+          } else if (arg.cmds[5] == "set") {
+            return {
+              output: "Set timezone. Please log out and log in to view.",
+              userdata: {
+                timezone: parseInt(arg.cmds[6]),
+              },
+            };
+          }
+        }
       }
     } else if (arg.cmds[2] == "locks") {
       if (arg.cmds[3] == "super") {
