@@ -1,4 +1,5 @@
 # adyOS v1.0.0 beta (Development Branch)
+
 ## [Click here to to the production branch.](https://git.ady.best/tree/prod)
 
 ### Contains 1.5k+ lines of code!
@@ -37,9 +38,9 @@ A full command line pseudo-operating system written entirely in JavaScript using
 - Wrote adyPM. (In Development)
 - Fixed `run` command.
 - Update some login things.
-- Create top bar. (In Development)
+- Create top bar.
 - Create workspaces function. (In Development)
 - Make commands case-insensitive.
 - Update ezOut with some new functions for more text variety.
 - Add customizable prompts (Planned)
-- Timezone customisation (In Development)
+- Timezone customisation

@@ -329,6 +329,29 @@ async function super_(arg) {
 // clear screen
 function clearscreen() {
   console.clear();
+  // awesome user info topbar
+  ezout.inverted_text(
+    ezout.center(
+      `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`,
+      true
+    )
+  ); // username @ systemname // on workspace workspace // adyos version X.X.X
+  if (
+    process.stdout.columns <
+    `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`
+      .length
+  ) {
+    console.clear();
+    ezout.inverted_text(
+      ezout.center(
+        `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`.slice(
+          0,
+          process.stdout.columns - 3
+        ) + "...",
+        true
+      )
+    );
+  }
   return 0;
 }
 
