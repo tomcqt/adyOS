@@ -31,6 +31,11 @@ A full command line pseudo-operating system written entirely in JavaScript using
 
 ### dev.0.4
 
-- Wrote adyPM
+- Wrote adyPM. (In Development)
 - Fixed `run` command.
 - Update some login things.
+- Create top bar. (In Development)
+- Create workspaces function. (In Development)
+- Make commands case-insensitive.
+- Update ezOut with some new functions for more text variety.
+- Make the prompt more colourful. (Planned)
