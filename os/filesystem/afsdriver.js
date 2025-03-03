@@ -38,4 +38,17 @@ function fsfix(path) {
   return "./os/filesystem" + (path.charAt(0) == "/" ? "" : "/") + path;
 }
 
-export { setdefault, rewritepath, getsystemname, fsfix, getdefault };
+function gettimezone() {
+  let file = fs.readFileSync("./os/filesystem/users.json");
+  let json = JSON.parse(Buffer.from(file));
+  return json.timezone;
+}
+
+export {
+  setdefault,
+  rewritepath,
+  getsystemname,
+  fsfix,
+  getdefault,
+  gettimezone,
+};

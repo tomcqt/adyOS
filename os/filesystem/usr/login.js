@@ -102,6 +102,7 @@ async function show() {
         signuplocked: false,
         superlocked: false,
         sysname: "adyos",
+        timezone: 0,
       })
     );
 

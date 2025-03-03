@@ -1,4 +1,4 @@
-# adyOS dev.0.4 (Development Branch)
+# adyOS 1.0.0 (Development Branch)
 
 ### Contains 1.5k+ lines of code!
 
@@ -29,7 +29,9 @@ A full command line pseudo-operating system written entirely in JavaScript using
 - Added the ability to change your password
 - Added the ability to give and take super priviledges from accounts.
 
-### dev.0.4
+### 1.0.0
+
+#### The first full release!
 
 - Wrote adyPM. (In Development)
 - Fixed `run` command.
@@ -39,3 +41,4 @@ A full command line pseudo-operating system written entirely in JavaScript using
 - Make commands case-insensitive.
 - Update ezOut with some new functions for more text variety.
 - Add customizable prompts (Planned)
+- Timezone customisation (In Development)

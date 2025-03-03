@@ -79,14 +79,29 @@ async function start(username) {
   console.log(
     `Welcome, ${ezout.colours.bold}${username}${ezout.colours.reset}!`
   );
-  console.log(
-    `The system time is ${ezout.colours.bold}${new Date()
+  // get time with timezone modifier
+  function formatdate(timezoneOffset) {
+    const date = new Date();
+
+    const time = date.getTime();
+
+    const offset = timezoneOffset * 60 * 60 * 1000;
+    const newtime = new Date(time + offset);
+
+    return newtime
       .toISOString()
       .replace("T", " ")
       .split(".")[0]
       .split(" ")
       .reverse()
-      .join(" on ")}${ezout.colours.reset} (UTC)\n`
+      .join(" on ");
+  }
+
+  const timezoneOffset = afs.gettimezone();
+  console.log(
+    `The system time is ${ezout.colours.bold}${formatdate(timezoneOffset)}${
+      ezout.colours.reset
+    } (UTC${timezoneOffset >= 0 ? "+" + timezoneOffset : timezoneOffset})\n`
   );
 
   // main command process
