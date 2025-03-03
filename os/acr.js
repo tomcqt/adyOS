@@ -20,10 +20,60 @@ async function start(username) {
 
   systemname = await afs.getsystemname();
 
+  let workspace = "none";
+
   let version = fs.readFileSync("./os/version", "utf-8"); // read the version file
 
   // awesome user info topbar
-  ezout.inverted_text(ezout.center(`${username} @ ${systemname}`));
+  ezout.inverted_text(
+    ezout.center(
+      `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`,
+      true
+    )
+  ); // username @ systemname // on workspace workspace // adyos version X.X.X
+  if (
+    process.stdout.columns <
+    `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`
+      .length
+  ) {
+    console.clear();
+    ezout.inverted_text(
+      ezout.center(
+        `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`.slice(
+          0,
+          process.stdout.columns - 3
+        ) + "...",
+        true
+      )
+    );
+  }
+
+  // update the awesome user info topbar when the window is resized
+  process.stdout.on("resize", () => {
+    console.clear();
+    ezout.inverted_text(
+      ezout.center(
+        `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`,
+        true
+      )
+    );
+    if (
+      process.stdout.columns <
+      `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`
+        .length
+    ) {
+      console.clear();
+      ezout.inverted_text(
+        ezout.center(
+          `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`.slice(
+            0,
+            process.stdout.columns - 3
+          ) + "...",
+          true
+        )
+      );
+    }
+  });
 
   // welcome text
   console.log(`Welcome, ${username}!`);
@@ -61,9 +111,9 @@ async function start(username) {
     ezout.info(commandsplit);
 
     // checks if command exists
-    if (cmd.cmd.find((item) => item[0] === commandsplit[0])) {
+    if (cmd.cmd.find((item) => item[0] === commandsplit[0].toLowerCase())) {
       for (let i = 0; i < cmd.cmd.length; i++) {
-        if (cmd.cmd[i][0] === commandsplit[0]) {
+        if (cmd.cmd[i][0] === commandsplit[0].toLowerCase()) {
           // run command and store result
           let result = await cmd.cmd[i][1]({
             cmd: command,
