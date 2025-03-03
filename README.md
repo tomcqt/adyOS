@@ -38,3 +38,4 @@ A full command line pseudo-operating system written entirely in JavaScript using
 - Create workspaces function. (In Development)
 - Make commands case-insensitive.
 - Update ezOut with some new functions for more text variety.
+- Add customizable prompts (Planned)
