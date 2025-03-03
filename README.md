@@ -1,4 +1,4 @@
-# adyOS 1.0.0 (Development Branch)
+# adyOS v1.0.0 beta (Development Branch)
 
 ### Contains 1.5k+ lines of code!
 
