@@ -129,8 +129,9 @@ function panic(err) {
 async function startup() {
   ezout.info("Loading login screen");
   let usrinfo = await logins.show(); // show login screen
+  let os;
   try {
-    let os = await acr.start(usrinfo);
+    os = await acr.start(usrinfo);
   } catch (err) {
     if (debug.debug) {
       throw err;
