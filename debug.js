@@ -4,8 +4,8 @@ let debug = false;
 
 // AUTO COMMAND
 let autocmd = {
-  on: false,
-  command: "adypm +asdf",
+  on: true,
+  command: "get a a",
   user: {
     username: "tomcat",
     password: "guilford",
