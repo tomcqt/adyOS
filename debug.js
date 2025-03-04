@@ -4,11 +4,12 @@ let debug = false;
 
 // AUTO COMMAND
 let autocmd = {
-  on: true,
-  command: "get a a",
+  on: false, // set this to true if you want to use it
+  command: "", // add the command you want to run here
   user: {
-    username: "tomcat",
-    password: "guilford",
+    //
+    username: "", // add account username here
+    password: "", // add account password here
   },
 };
 // AUTO COMMAND
