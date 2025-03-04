@@ -44,3 +44,4 @@ A full command line pseudo-operating system written entirely in JavaScript using
 - Update ezOut with some new functions for more text variety.
 - Add customizable prompts (Planned)
 - Timezone customisation
+- Add error handling (In development)
