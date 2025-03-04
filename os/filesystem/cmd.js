@@ -869,6 +869,11 @@ let cmd = [
   ["ws", workspace],
   ["space", workspace],
   ["spaces", workspace],
+  ["time", time],
+  ["clock", time],
+  ["date", time],
+  ["gettime", time],
+  ["getdate", time],
 ];
 
 // add debug commands if in debug mode
