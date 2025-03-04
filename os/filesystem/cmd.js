@@ -806,10 +806,10 @@ function workspace(arg) {
     return 'adyOS Spaces\n\
 \n\
 Example Usage:\n\
-spaces initialise [name]   - Initialises a workspace called [name]\n\
-spaces enter [name]        - Enters the workspace called [name]\n\
-spaces leave               - Leaves the workspace you are in and goes to workspace "none"\n\
-spaces uninitialise [name] - Remove the workspace called [name]';
+spaces create [name] - Initialises a workspace called [name]\n\
+spaces enter [name]  - Enters the workspace called [name]\n\
+spaces leave         - Leaves the workspace you are in and goes to workspace "none"\n\
+spaces delete [name] - Remove the workspace called [name]';
   }
 }
 
