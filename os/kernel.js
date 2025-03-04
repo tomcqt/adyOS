@@ -50,7 +50,11 @@ await delay.wait(1000);
 async function startup() {
   ezout.info("Loading login screen");
   let usrinfo = await logins.show(); // show login screen
-  let os = await acr.start(usrinfo);
+  try {
+    let os = await acr.start(usrinfo);
+  } catch (err) {
+    ezout.error_nodebug(err);
+  }
   if (os === 126) {
     await startup();
   }

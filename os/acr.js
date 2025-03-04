@@ -138,12 +138,16 @@ async function start(username) {
             usr: {
               username: username,
               systemname: systemname,
-              timezone: afs.gettimezone(),
             },
             dir: {
               path: path,
               pathrw: pathrewritten,
               home: afs.setdefault(username),
+            },
+            sys: {
+              workspace: workspace,
+              timezone: afs.gettimezone(),
+              version: version,
             },
             version: version,
           });

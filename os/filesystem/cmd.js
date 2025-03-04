@@ -62,7 +62,7 @@ function system(arg) {
       } else if (arg.cmds[3] == "user") {
         if (arg.cmds[4] == "timezone") {
           if (arg.cmds[5] == "get") {
-            console.log("Current timezone: " + arg.usr.timezone.toString());
+            console.log("Current timezone: " + arg.sys.timezone.toString());
             return 0;
           } else if (arg.cmds[5] == "set") {
             return {
@@ -327,23 +327,24 @@ async function super_(arg) {
 }
 
 // clear screen
-function clearscreen() {
+function clearscreen(arg) {
+  console.clear();
   // awesome user info topbar
   ezout.inverted_text(
     ezout.center(
-      `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`,
+      `${arg.usr.username} @ ${arg.usr.systemname} // on workspace ${arg.sys.workspace} // running adyos version ${arg.sys.version}`,
       true
     )
   ); // username @ systemname // on workspace workspace // adyos version X.X.X
   if (
     process.stdout.columns <
-    `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`
+    `${arg.usr.username} @ ${arg.usr.systemname} // on workspace ${arg.sys.workspace} // running adyos version ${arg.sys.version}`
       .length
   ) {
     console.clear();
     ezout.inverted_text(
       ezout.center(
-        `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`.slice(
+        `${arg.usr.username} @ ${arg.usr.systemname} // on workspace ${arg.sys.workspace} // running adyos version ${arg.sys.version}`.slice(
           0,
           process.stdout.columns - 3
         ) + "...",
@@ -351,8 +352,6 @@ function clearscreen() {
       )
     );
   }
-
-  console.clear();
   return 0;
 }
 
