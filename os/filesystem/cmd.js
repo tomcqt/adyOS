@@ -42,7 +42,7 @@ function echo(arg) {
 }
 
 // system settings basically
-function system(arg) {
+async function system(arg) {
   if (arg.cmds[0] == "super" || arg.cmds[0] == "sudo") {
     if (arg.cmds[2] == "info") {
       if (arg.cmds[3] == "name") {
@@ -234,6 +234,19 @@ function system(arg) {
       } else {
         return "[ ERROR ] No such user!";
       }
+    } else if (arg.cmds[2] == "update") {
+      console.log("Updating...");
+      let process = childprocess.spawn("./os/filesystem/usr/update.sh", {
+        cwd: ".",
+        shell: true,
+      });
+      process.stdout.on("data", (data) => {
+        console.log(data.toString());
+      });
+      await new Promise((resolve) => {
+        process.on("close", resolve);
+      });
+      return "Please restart the OS to use the updated software.";
     }
     return "[ ERROR ] Argument not found!";
   } else {
