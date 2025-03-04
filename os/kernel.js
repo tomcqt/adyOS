@@ -53,7 +53,13 @@ async function startup() {
   try {
     let os = await acr.start(usrinfo);
   } catch (err) {
-    ezout.error_nodebug(err);
+    ezout.error_nodebug("System panicked!");
+    ezout.error_nodebug("Due to a(n) " + err.name + " caused by:");
+    ezout.error_nodebug(err.message);
+    ezout.error_nodebug(
+      "Please add an issue in the project GitHub if you can replicate this crash"
+    );
+    return;
   }
   if (os === 126) {
     await startup();
