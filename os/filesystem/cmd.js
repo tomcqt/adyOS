@@ -800,6 +800,34 @@ spaces uninitialise [name] - Remove the workspace called [name]';
   }
 }
 
+// gets the time
+function time(arg) {
+  function formatdate(timezoneOffset) {
+    const date = new Date();
+
+    const time = date.getTime();
+
+    const offset = arg.sys.timezone * 60 * 60 * 1000;
+    const newtime = new Date(time + offset);
+
+    return newtime
+      .toISOString()
+      .replace("T", " ")
+      .split(".")[0]
+      .split(" ")
+      .reverse()
+      .join(" on ");
+  }
+
+  const timezoneOffset = afs.gettimezone();
+  console.log(
+    `It is currently ${ezout.colours.bold}${formatdate(timezoneOffset)}${
+      ezout.colours.reset
+    } (UTC${timezoneOffset >= 0 ? "+" + timezoneOffset : timezoneOffset})\n`
+  );
+  return 0;
+}
+
 // [name, function]
 let cmd = [
   ["echo", echo],
