@@ -328,6 +328,30 @@ async function super_(arg) {
 
 // clear screen
 function clearscreen() {
+  // awesome user info topbar
+  ezout.inverted_text(
+    ezout.center(
+      `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`,
+      true
+    )
+  ); // username @ systemname // on workspace workspace // adyos version X.X.X
+  if (
+    process.stdout.columns <
+    `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`
+      .length
+  ) {
+    console.clear();
+    ezout.inverted_text(
+      ezout.center(
+        `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`.slice(
+          0,
+          process.stdout.columns - 3
+        ) + "...",
+        true
+      )
+    );
+  }
+
   console.clear();
   return 0;
 }
@@ -767,12 +791,13 @@ function workspace(arg) {
   if (arg.cmds.length >= 2) {
     return "unimplemented!";
   } else {
-    return "adyOS Spaces\n\
+    return 'adyOS Spaces\n\
 \n\
 Example Usage:\n\
-workspaces initialise [name]   - Initialises a workspace called [name]\n\
-workspaces enter [name]        - Enters the workspace called [name]\n\
-workspaces uninitialise [name] - Remove the workspace called [name]";
+spaces initialise [name]   - Initialises a workspace called [name]\n\
+spaces enter [name]        - Enters the workspace called [name]\n\
+spaces leave               - Leaves the workspace you are in and goes to workspace "none"\n\
+spaces uninitialise [name] - Remove the workspace called [name]';
   }
 }
 
