@@ -132,8 +132,9 @@ async function start(username) {
       for (let i = 0; i < cmd.cmd.length; i++) {
         if (cmd.cmd[i][0] === commandsplit[0].toLowerCase()) {
           // run command and store result
+          let result;
           try {
-            let result = await cmd.cmd[i][1]({
+            result = await cmd.cmd[i][1]({
               cmd: command,
               cmds: commandsplit,
               usr: {
