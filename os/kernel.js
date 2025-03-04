@@ -47,10 +47,34 @@ if (debug.debug) {
 
 await delay.wait(1000);
 
+function panic(err) {
+  let message = [
+    `System panicked!`,
+    "We found a(n) " + err.name + " due to:",
+    "Running adyOS version " + fs.readFileSync("./os/version"),
+    "Please add an issue in the project GitHub if you can replicate this crash",
+  ];
+  err.message.split("\n").forEach((i) => {
+    message.push(i);
+  });
+  let longest = message.sort(function (a, b) {
+    return b.length - a.length;
+  })[0].length;
+  let spacer = " ".repeat(ezout.center(longest).split(" ").length - 1);
+  message.forEach((i) => {
+    console.log(spacer + i);
+  });
+}
+
 async function startup() {
   ezout.info("Loading login screen");
   let usrinfo = await logins.show(); // show login screen
-  let os = await acr.start(usrinfo);
+  try {
+    let os = await acr.start(usrinfo);
+  } catch (err) {
+    panic(err);
+    return;
+  }
   if (os === 126) {
     await startup();
   }

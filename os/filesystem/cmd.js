@@ -62,7 +62,7 @@ function system(arg) {
       } else if (arg.cmds[3] == "user") {
         if (arg.cmds[4] == "timezone") {
           if (arg.cmds[5] == "get") {
-            console.log("Current timezone: " + arg.usr.timezone.toString());
+            console.log("Current timezone: " + arg.sys.timezone.toString());
             return 0;
           } else if (arg.cmds[5] == "set") {
             return {
@@ -327,24 +327,24 @@ async function super_(arg) {
 }
 
 // clear screen
-function clearscreen() {
+function clearscreen(arg) {
   console.clear();
   // awesome user info topbar
   ezout.inverted_text(
     ezout.center(
-      `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`,
+      `${arg.usr.username} @ ${arg.usr.systemname} // on workspace ${arg.sys.workspace} // running adyos version ${arg.sys.version}`,
       true
     )
   ); // username @ systemname // on workspace workspace // adyos version X.X.X
   if (
     process.stdout.columns <
-    `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`
+    `${arg.usr.username} @ ${arg.usr.systemname} // on workspace ${arg.sys.workspace} // running adyos version ${arg.sys.version}`
       .length
   ) {
     console.clear();
     ezout.inverted_text(
       ezout.center(
-        `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`.slice(
+        `${arg.usr.username} @ ${arg.usr.systemname} // on workspace ${arg.sys.workspace} // running adyos version ${arg.sys.version}`.slice(
           0,
           process.stdout.columns - 3
         ) + "...",
@@ -790,12 +790,13 @@ function workspace(arg) {
   if (arg.cmds.length >= 2) {
     return "unimplemented!";
   } else {
-    return "adyOS Spaces\n\
+    return 'adyOS Spaces\n\
 \n\
 Example Usage:\n\
-workspaces initialise [name]   - Initialises a workspace called [name]\n\
-workspaces enter [name]        - Enters the workspace called [name]\n\
-workspaces uninitialise [name] - Remove the workspace called [name]";
+spaces initialise [name]   - Initialises a workspace called [name]\n\
+spaces enter [name]        - Enters the workspace called [name]\n\
+spaces leave               - Leaves the workspace you are in and goes to workspace "none"\n\
+spaces uninitialise [name] - Remove the workspace called [name]';
   }
 }
 

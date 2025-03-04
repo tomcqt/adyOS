@@ -132,21 +132,29 @@ async function start(username) {
       for (let i = 0; i < cmd.cmd.length; i++) {
         if (cmd.cmd[i][0] === commandsplit[0].toLowerCase()) {
           // run command and store result
-          let result = await cmd.cmd[i][1]({
-            cmd: command,
-            cmds: commandsplit,
-            usr: {
-              username: username,
-              systemname: systemname,
-              timezone: afs.gettimezone(),
-            },
-            dir: {
-              path: path,
-              pathrw: pathrewritten,
-              home: afs.setdefault(username),
-            },
-            version: version,
-          });
+          try {
+            let result = await cmd.cmd[i][1]({
+              cmd: command,
+              cmds: commandsplit,
+              usr: {
+                username: username,
+                systemname: systemname,
+              },
+              dir: {
+                path: path,
+                pathrw: pathrewritten,
+                home: afs.setdefault(username),
+              },
+              sys: {
+                workspace: workspace,
+                timezone: afs.gettimezone(),
+                version: version,
+              },
+              version: version,
+            });
+          } catch (err) {
+            throw err;
+          }
           // print result data to screen and handle return codes.
           // if its an await function turn it into a string
           if (result instanceof Promise) {
