@@ -6,9 +6,7 @@ import * as debug from "../debug.js";
 function info(text) {
   if (debug.debug == true) {
     console.log(
-      `[ ${ezout.colours.bold + ezout.colours.blue}INFO ${
-        ezout.colours.reset
-      }] ` + text
+      `[ ${colours.bold + colours.blue}INFO ${colours.reset}] ` + text
     );
   }
 }
@@ -16,9 +14,7 @@ function info(text) {
 function error(text) {
   if (debug.debug == true) {
     console.log(
-      `[ ${ezout.colours.bold + ezout.colours.red}ERROR${
-        ezout.colours.reset
-      } ] ` + text
+      `[ ${colours.bold + colours.red}ERROR${colours.reset} ] ` + text
     );
   }
 }
@@ -26,9 +22,7 @@ function error(text) {
 function warn(text) {
   if (debug.debug == true) {
     console.log(
-      `[ ${ezout.colours.bold + ezout.colours.yellow}WARN${
-        ezout.colours.reset
-      } ] ` + text
+      `[ ${colours.bold + colours.yellow}WARN${colours.reset} ] ` + text
     );
   }
 }
@@ -36,9 +30,7 @@ function warn(text) {
 function working(text) {
   if (debug.debug == true) {
     console.log(
-      `[ ${ezout.colours.bold + ezout.colours.magenta}WORKING${
-        ezout.colours.reset
-      } ] ` + text
+      `[ ${colours.bold + colours.magenta}WORKING${colours.reset} ] ` + text
     );
   }
 }
@@ -46,50 +38,34 @@ function working(text) {
 function done(text) {
   if (debug.debug == true) {
     console.log(
-      `[ ${ezout.colours.bold + ezout.colours.green}DONE${
-        ezout.colours.reset
-      } ] ` + text
+      `[ ${colours.bold + colours.green}DONE${colours.reset} ] ` + text
     );
   }
 }
 
 function info_nodebug(text) {
-  console.log(
-    `[ ${ezout.colours.bold + ezout.colours.blue}INFO ${
-      ezout.colours.reset
-    }] ` + text
-  );
+  console.log(`[ ${colours.bold + colours.blue}INFO ${colours.reset}] ` + text);
 }
 
 function error_nodebug(text) {
-  console.log(
-    `[ ${ezout.colours.bold + ezout.colours.red}ERROR${
-      ezout.colours.reset
-    } ] ` + text
-  );
+  console.log(`[ ${colours.bold + colours.red}ERROR${colours.reset} ] ` + text);
 }
 
 function warn_nodebug(text) {
   console.log(
-    `[ ${ezout.colours.bold + ezout.colours.yellow}WARN${
-      ezout.colours.reset
-    } ] ` + text
+    `[ ${colours.bold + colours.yellow}WARN${colours.reset} ] ` + text
   );
 }
 
 function working_nodebug(text) {
   console.log(
-    `[ ${ezout.colours.bold + ezout.colours.magenta}WORKING${
-      ezout.colours.reset
-    } ] ` + text
+    `[ ${colours.bold + colours.magenta}WORKING${colours.reset} ] ` + text
   );
 }
 
 function done_nodebug(text) {
   console.log(
-    `[ ${ezout.colours.bold + ezout.colours.green}DONE${
-      ezout.colours.reset
-    } ] ` + text
+    `[ ${colours.bold + colours.green}DONE${colours.reset} ] ` + text
   );
 }
 
