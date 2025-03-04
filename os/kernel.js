@@ -53,9 +53,14 @@ async function startup() {
   try {
     let os = await acr.start(usrinfo);
   } catch (err) {
-    ezout.error_nodebug("System panicked!");
-    ezout.error_nodebug("Due to a(n) " + err.name + " caused by:");
+    ezout.error_nodebug(
+      `${ezout.colours.bold}System panicked!${ezout.colours.reset}`
+    );
+    ezout.error_nodebug("We found a(n) " + err.name + " due to:");
     ezout.error_nodebug(err.message);
+    ezout.error_nodebug(
+      "Running adyOS version " + fs.readFileSync("./os/version")
+    );
     ezout.error_nodebug(
       "Please add an issue in the project GitHub if you can replicate this crash"
     );
