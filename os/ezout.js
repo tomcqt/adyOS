@@ -5,52 +5,92 @@ import * as debug from "../debug.js";
 
 function info(text) {
   if (debug.debug == true) {
-    console.log("[ INFO ] " + text);
+    console.log(
+      `[ ${ezout.colours.bold + ezout.colours.blue}INFO ${
+        ezout.colours.reset
+      }] ` + text
+    );
   }
 }
 
 function error(text) {
   if (debug.debug == true) {
-    console.log("[ ERROR ] " + text);
+    console.log(
+      `[ ${ezout.colours.bold + ezout.colours.red}ERROR${
+        ezout.colours.reset
+      } ] ` + text
+    );
   }
 }
 
 function warn(text) {
   if (debug.debug == true) {
-    console.log("[ WARN ] " + text);
+    console.log(
+      `[ ${ezout.colours.bold + ezout.colours.yellow}WARN${
+        ezout.colours.reset
+      } ] ` + text
+    );
   }
 }
 
 function working(text) {
   if (debug.debug == true) {
-    console.log("[ WORKING ] " + text);
+    console.log(
+      `[ ${ezout.colours.bold + ezout.colours.magenta}WORKING${
+        ezout.colours.reset
+      } ] ` + text
+    );
   }
 }
 
 function done(text) {
   if (debug.debug == true) {
-    console.log("[ DONE ] " + text);
+    console.log(
+      `[ ${ezout.colours.bold + ezout.colours.green}DONE${
+        ezout.colours.reset
+      } ] ` + text
+    );
   }
 }
 
 function info_nodebug(text) {
-  console.log("[ INFO ] " + text);
+  console.log(
+    `[ ${ezout.colours.bold + ezout.colours.blue}INFO ${
+      ezout.colours.reset
+    }] ` + text
+  );
 }
 
 function error_nodebug(text) {
-  console.log("[ ERROR ] " + text);
+  console.log(
+    `[ ${ezout.colours.bold + ezout.colours.red}ERROR${
+      ezout.colours.reset
+    } ] ` + text
+  );
 }
 
 function warn_nodebug(text) {
-  console.log("[ WARN ] " + text);
+  console.log(
+    `[ ${ezout.colours.bold + ezout.colours.yellow}WARN${
+      ezout.colours.reset
+    } ] ` + text
+  );
 }
 
 function working_nodebug(text) {
-  console.log("[ WORKING ] " + text);
+  console.log(
+    `[ ${ezout.colours.bold + ezout.colours.magenta}WORKING${
+      ezout.colours.reset
+    } ] ` + text
+  );
 }
 
 function done_nodebug(text) {
-  console.log("[ DONE ] " + text);
+  console.log(
+    `[ ${ezout.colours.bold + ezout.colours.green}DONE${
+      ezout.colours.reset
+    } ] ` + text
+  );
 }
 
 function inverted_text(text) {
