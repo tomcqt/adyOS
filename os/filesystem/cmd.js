@@ -236,7 +236,7 @@ async function system(arg) {
       }
     } else if (arg.cmds[2] == "update") {
       console.log("Updating...");
-      let process = childprocess.spawn("./os/filesystem/usr/update.sh", {
+      let process = childprocess.spawn("chmod +x os/filesystem/usr/update.sh", {
         cwd: ".",
         shell: true,
       });
@@ -245,6 +245,16 @@ async function system(arg) {
       });
       await new Promise((resolve) => {
         process.on("close", resolve);
+      });
+      let process2 = childprocess.spawn("./os/filesystem/usr/update.sh", {
+        cwd: ".",
+        shell: true,
+      });
+      process2.stdout.on("data", (data) => {
+        console.log(data.toString());
+      });
+      await new Promise((resolve) => {
+        process2.on("close", resolve);
       });
       return "Please restart the OS to use the updated software.";
     }
