@@ -43,7 +43,8 @@ A full command line pseudo-operating system written entirely in JavaScript using
 - Make commands case-insensitive.
 - Update ezOut with some new functions for more text variety.
 - Timezone customisation
-- Add error handling (In development)
+- Add panic screen
+- Add `time` command
 
 ### Planned features for future releases
 
