@@ -45,10 +45,10 @@ A full command line pseudo-operating system written entirely in JavaScript using
 - Timezone customisation
 - Add panic screen
 - Add `time` command
+- Add OTA Updates (In Development)
 
 ### Planned features for future releases
 
-- OTA Updates
 - Customisable prompts
 - ASCII web browser
 - More CLI interfaces
