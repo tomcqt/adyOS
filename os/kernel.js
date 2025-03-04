@@ -132,13 +132,17 @@ async function startup() {
   try {
     let os = await acr.start(usrinfo);
   } catch (err) {
-    panic(err);
-    await read({
-      prompt: "",
-      silent: true,
-      replace: "",
-    });
-    return;
+    if (debug.debug) {
+      throw err;
+    } else {
+      panic(err);
+      await read({
+        prompt: "",
+        silent: true,
+        replace: "",
+      });
+      return;
+    }
   }
   if (os === 126) {
     await startup();
