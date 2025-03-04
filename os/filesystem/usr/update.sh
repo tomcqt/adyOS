@@ -1,5 +1,7 @@
 #!/bin/bash
 
+git init
+
 # Total steps (approximate based on how git outputs progress updates)
 TOTAL_STEPS=100
 CURRENT_STEP=0
