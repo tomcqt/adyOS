@@ -268,15 +268,18 @@ async function system(arg) {
 async function user(arg) {
   let dat = JSON.parse(fs.readFileSync("./os/filesystem/users.json"));
 
-  let index = 0;
+  let index = -1;
   dat.users.forEach((i, j) => {
     if (i.username == arg.usr.username) {
       index = j;
     }
   });
 
+  ezout.info("index:" + index);
+  ezout.info("username:" + arg.usr.username);
+
   let usr;
-  if (index == 0) {
+  if (index == -1) {
     return "You don't exist. I have no idea how you did this.";
   } else {
     usr = dat.users[index];
@@ -293,7 +296,8 @@ async function user(arg) {
     fs.writeFileSync("./os/filesystem/users.json", JSON.stringify(dat));
     return "Changed password.";
   }
-  return "[ WARN ] Invalid syntax.";
+  ezout.warn_nodebug("Incorrect syntax.");
+  return 0;
 }
 
 // sudo
