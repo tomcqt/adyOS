@@ -1,0 +1,2 @@
+echo "welcome to the debugger."
+tail -f debug.log

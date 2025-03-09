@@ -37,13 +37,7 @@ import * as fs from "fs";
 fs.existsSync("./os/filesystem/home") || fs.mkdirSync("./os/filesystem/home");
 
 console.log(`\nWelcome to adyOS ${fs.readFileSync("./os/version", "utf-8")}`);
-ezout.info("Now with DEBUG MODE!!!!!!!!!!!!!!!!!!");
-ezout.warn("Debug mode enabled, it may look wacky.");
-ezout.warn("YOU HAVE BEEN WARNED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
-if (debug.debug) {
-  console.log();
-}
+ezout.info("adybug - adyos debugger");
 
 await delay.wait(1000);
 

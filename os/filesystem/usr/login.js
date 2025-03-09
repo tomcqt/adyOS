@@ -120,9 +120,7 @@ async function show() {
   ezout.info("Starting login screen");
 
   while (1 == 1) {
-    if (!debug.debug) {
-      console.clear();
-    }
+    console.clear();
 
     let login, signup;
 

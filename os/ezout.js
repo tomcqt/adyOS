@@ -3,9 +3,20 @@
 
 import * as debug from "../debug.js";
 
+import { Console } from "console";
+import * as fs from "fs";
+
+let stream, debugconsole;
+
+if (debug.debug == true) {
+  stream = fs.createWriteStream("./debug.log");
+
+  debugconsole = new Console(stream, stream);
+}
+
 function info(text) {
   if (debug.debug == true) {
-    console.log(
+    debugconsole.log(
       `[ ${colours.bold + colours.blue}INFO ${colours.reset}] ` + text
     );
   }
@@ -13,7 +24,7 @@ function info(text) {
 
 function error(text) {
   if (debug.debug == true) {
-    console.log(
+    debugconsole.log(
       `[ ${colours.bold + colours.red}ERROR${colours.reset} ] ` + text
     );
   }
@@ -21,7 +32,7 @@ function error(text) {
 
 function warn(text) {
   if (debug.debug == true) {
-    console.log(
+    debugconsole.log(
       `[ ${colours.bold + colours.yellow}WARN${colours.reset} ] ` + text
     );
   }
@@ -29,7 +40,7 @@ function warn(text) {
 
 function working(text) {
   if (debug.debug == true) {
-    console.log(
+    debugconsole.log(
       `[ ${colours.bold + colours.magenta}WORKING${colours.reset} ] ` + text
     );
   }
@@ -37,7 +48,7 @@ function working(text) {
 
 function done(text) {
   if (debug.debug == true) {
-    console.log(
+    debugconsole.log(
       `[ ${colours.bold + colours.green}DONE${colours.reset} ] ` + text
     );
   }

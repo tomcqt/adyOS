@@ -10,9 +10,8 @@ import * as debug from "../debug.js";
 async function start(username) {
   // acr.start();
   // clear screen
-  if (!debug.debug) {
-    console.clear();
-  }
+
+  console.clear();
 
   // initialise variables
   let path = afs.setdefault(username);
