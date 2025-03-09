@@ -46,6 +46,8 @@ A full command line pseudo-operating system written entirely in JavaScript using
 - Add panic screen
 - Add `time` command
 - Add OTA Updates
+- Add `edit` command for easier text editing. (In development)
+- Create a better debugger called "adybug"
 
 ### Planned features for future releases
 
