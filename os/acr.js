@@ -198,7 +198,7 @@ async function start(username) {
     }
     // update topbar
     process.stdout.write("\u001b[s");
-    process.stdout.write(`\u001b[${process.stdout.rows - 2}A\u001b[K`);
+    process.stdout.write(`\u001b[${process.stdout.rows - 1}A\u001b[K`);
     process.stdout.write(rendertopbar());
     process.stdout.write("\u001b[u");
   }
