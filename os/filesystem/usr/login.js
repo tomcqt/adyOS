@@ -158,6 +158,8 @@ ${ezout.colours.dim}choose then press enter${ezout.colours.reset}`;
       q = "";
     }
 
+    q = q.split("")[q.split("").length - 1]; // make q only contain the last character of the input
+
     if (q.toLowerCase() == "l" && allowed[0]) {
       // login screen
 
