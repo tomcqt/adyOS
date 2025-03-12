@@ -14,7 +14,7 @@ let autocmd = {
 // AUTO COMMAND
 
 // No Panic: Disables the panic screen while in debug mode.
-nopanic = false; // true: Sends usual Node.JS errors - false: Use adyOS panics
+let nopanic = false; // true: Sends usual Node.JS errors - false: Use adyOS panics
 
 // Debug mode can also be enabled by using `npm run debug` or `./bin/debug` if on Linux
 // That function is handled by this code
