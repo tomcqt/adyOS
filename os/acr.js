@@ -139,11 +139,6 @@ async function start(username) {
             throw err;
           }
           // print result data to screen and handle return codes.
-          // update topbar
-          process.stdout.write("\u001b[s");
-          process.stdout.write(`\u001b[${process.stdout.rows - 2}A\u001b[K`);
-          process.stdout.write(rendertopbar());
-          process.stdout.write("\u001b[u");
           // if its an await function turn it into a string
           if (result instanceof Promise) {
             result.then((output) => (result = output));
@@ -201,6 +196,11 @@ async function start(username) {
     if (debug.autocmd.on) {
       break;
     }
+    // update topbar
+    process.stdout.write("\u001b[s");
+    process.stdout.write(`\u001b[${process.stdout.rows - 2}A\u001b[K`);
+    process.stdout.write(rendertopbar());
+    process.stdout.write("\u001b[u");
   }
 }
 
