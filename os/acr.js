@@ -140,14 +140,10 @@ async function start(username) {
           }
           // print result data to screen and handle return codes.
           // update topbar
-          let oldpos = [
-            readline.getCursorPos().cols,
-            readline.getCursorPos().rows,
-          ];
-          readline.cursorTo(process.stdout, 0, 0);
-          readline.clearLine(process.stdout, 0);
+          process.stdout.write("\u001b[s");
+          process.stdout.write(`\u001b[${process.stdout.rows - 2}A\u001b[K`);
           rendertopbar();
-          readline.cursorTo(process.stdout, oldpos[0], oldpos[1]);
+          process.stdout.write("\u001b[u");
           // if its an await function turn it into a string
           if (result instanceof Promise) {
             result.then((output) => (result = output));
