@@ -28,4 +28,4 @@ if (process.argv.includes("--no-panic")) {
   nopanic = true;
 }
 
-export { debug, autocmd, nodebug };
+export { debug, autocmd, nopanic };
