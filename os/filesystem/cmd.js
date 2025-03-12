@@ -357,10 +357,12 @@ async function super_(arg) {
 function clearscreen(arg) {
   console.clear();
   // awesome user info topbar
-  ezout.inverted_text(
-    ezout.center(
-      `${arg.usr.username} @ ${arg.usr.systemname} // on workspace ${arg.sys.workspace} // running adyos version ${arg.sys.version}`,
-      true
+  console.log(
+    ezout.inverted_text(
+      ezout.center(
+        `${arg.usr.username} @ ${arg.usr.systemname} // on workspace ${arg.sys.workspace} // running adyos version ${arg.sys.version}`,
+        true
+      )
     )
   ); // username @ systemname // on workspace workspace // adyos version X.X.X
   if (
@@ -369,13 +371,15 @@ function clearscreen(arg) {
       .length
   ) {
     console.clear();
-    ezout.inverted_text(
-      ezout.center(
-        `${arg.usr.username} @ ${arg.usr.systemname} // on workspace ${arg.sys.workspace} // running adyos version ${arg.sys.version}`.slice(
-          0,
-          process.stdout.columns - 3
-        ) + "...",
-        true
+    console.log(
+      ezout.inverted_text(
+        ezout.center(
+          `${arg.usr.username} @ ${arg.usr.systemname} // on workspace ${arg.sys.workspace} // running adyos version ${arg.sys.version}`.slice(
+            0,
+            process.stdout.columns - 3
+          ) + "...",
+          true
+        )
       )
     );
   }

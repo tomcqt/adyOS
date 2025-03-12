@@ -25,7 +25,7 @@ async function start(username) {
   let version = fs.readFileSync("./os/version", "utf-8"); // read the version file
 
   // awesome user info topbar
-  function rendertopbar() {
+  function rendertopbar(ending) {
     ezout.inverted_text(
       ezout.center(
         `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`,
@@ -49,12 +49,12 @@ async function start(username) {
       );
     }
   }
-  rendertopbar();
+  console.log(rendertopbar());
 
   // update the awesome user info topbar when the window is resized
   process.stdout.on("resize", () => {
     console.clear();
-    rendertopbar();
+    console.log(rendertopbar("\n"));
   });
 
   // welcome text
@@ -142,7 +142,7 @@ async function start(username) {
           // update topbar
           process.stdout.write("\u001b[s");
           process.stdout.write(`\u001b[${process.stdout.rows - 2}A\u001b[K`);
-          rendertopbar();
+          process.stdout.write(rendertopbar());
           process.stdout.write("\u001b[u");
           // if its an await function turn it into a string
           if (result instanceof Promise) {
