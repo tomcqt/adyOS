@@ -127,7 +127,7 @@ async function startup() {
   try {
     os = await acr.start(usrinfo);
   } catch (err) {
-    if (debug.debug) {
+    if (debug.debug && debug.nopanic) {
       throw err;
     } else {
       panic(err);

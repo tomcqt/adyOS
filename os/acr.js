@@ -6,6 +6,7 @@ import * as cmd from "./filesystem/cmd.js";
 import * as ezout from "./ezout.js";
 import * as fs from "fs";
 import * as debug from "../debug.js";
+import * as readline from "readline";
 
 async function start(username) {
   // acr.start();
@@ -24,38 +25,13 @@ async function start(username) {
   let version = fs.readFileSync("./os/version", "utf-8"); // read the version file
 
   // awesome user info topbar
-  ezout.inverted_text(
-    ezout.center(
-      `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`,
-      true
-    )
-  ); // username @ systemname // on workspace workspace // adyos version X.X.X
-  if (
-    process.stdout.columns <
-    `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`
-      .length
-  ) {
-    console.clear();
-    ezout.inverted_text(
-      ezout.center(
-        `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`.slice(
-          0,
-          process.stdout.columns - 3
-        ) + "...",
-        true
-      )
-    );
-  }
-
-  // update the awesome user info topbar when the window is resized
-  process.stdout.on("resize", () => {
-    console.clear();
+  function rendertopbar() {
     ezout.inverted_text(
       ezout.center(
         `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`,
         true
       )
-    );
+    ); // username @ systemname // on workspace workspace // adyos version X.X.X
     if (
       process.stdout.columns <
       `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`
@@ -72,6 +48,13 @@ async function start(username) {
         )
       );
     }
+  }
+  rendertopbar();
+
+  // update the awesome user info topbar when the window is resized
+  process.stdout.on("resize", () => {
+    console.clear();
+    rendertopbar();
   });
 
   // welcome text
@@ -156,6 +139,15 @@ async function start(username) {
             throw err;
           }
           // print result data to screen and handle return codes.
+          // update topbar
+          let oldpos = [
+            readline.getCursorPos().cols,
+            readline.getCursorPos().rows,
+          ];
+          readline.cursorTo(process.stdout, 0, 0);
+          readline.clearLine(process.stdout, 0);
+          rendertopbar();
+          readline.cursorTo(process.stdout, oldpos[0], oldpos[1]);
           // if its an await function turn it into a string
           if (result instanceof Promise) {
             result.then((output) => (result = output));
