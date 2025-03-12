@@ -26,19 +26,12 @@ async function start(username) {
 
   // awesome user info topbar
   function rendertopbar(ending) {
-    ezout.inverted_text(
-      ezout.center(
-        `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`,
-        true
-      )
-    ); // username @ systemname // on workspace workspace // adyos version X.X.X
     if (
       process.stdout.columns <
       `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`
         .length
     ) {
-      console.clear();
-      ezout.inverted_text(
+      return ezout.inverted_text(
         ezout.center(
           `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`.slice(
             0,
@@ -47,6 +40,13 @@ async function start(username) {
           true
         )
       );
+    } else {
+      return ezout.inverted_text(
+        ezout.center(
+          `${username} @ ${systemname} // on workspace ${workspace} // running adyos version ${version}`,
+          true
+        )
+      ); // username @ systemname // on workspace workspace // adyos version X.X.X
     }
   }
   console.log(rendertopbar());

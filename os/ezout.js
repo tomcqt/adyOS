@@ -81,7 +81,7 @@ function done_nodebug(text) {
 }
 
 function inverted_text(text) {
-  return `\x1b[7m${text}\n\x1b[0m`, "";
+  return `\x1b[7m${text}\n\x1b[0m`;
 }
 
 function center(text, fill) {
