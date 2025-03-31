@@ -564,6 +564,7 @@ async function contents(arg) {
 function cd(arg, leave) {
   let goto;
   let final_path;
+  if (!arg.cmds[1]) return "cd requires 1 argument";
   if (!leave) {
     goto = arg.cmds[1].split("/").filter((i) => {
       return i !== "" && i !== "." && i !== ".." && i !== "~";
