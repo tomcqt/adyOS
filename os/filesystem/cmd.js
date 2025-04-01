@@ -476,7 +476,7 @@ async function pacman(arg) {
         let file = fs.createWriteStream(
           afs.fsfix(arg.dir.home) + ".adypm/tmp/" + num + ".json"
         );
-        let req = https.get(item.url + "repos/pkg.json", (res) => {
+        https.get(repo[0] + "repos/pkg.json", (res) => {
           res.pipe(file);
 
           // after download completed close filestream
