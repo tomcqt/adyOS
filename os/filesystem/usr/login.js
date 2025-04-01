@@ -149,16 +149,20 @@ ${ezout.colours.dim}choose then press enter${ezout.colours.reset}`;
 
     console.log(text);
     if (!debug.autocmd.on) {
-      q = await read({
-        prompt: "",
-        silent: true,
-        replace: "",
-      });
+      q = null;
+      while (!q) {
+        q = await read({
+          prompt: "",
+          silent: true,
+          replace: "",
+        });
+
+        q = q.split("");
+        q = q[q.length - 1]; // make q only contain the last character of the input
+      }
     } else {
       q = "";
     }
-
-    q = q.split("")[q.split("").length - 1]; // make q only contain the last character of the input
 
     if (q.toLowerCase() == "l" && allowed[0]) {
       // login screen
