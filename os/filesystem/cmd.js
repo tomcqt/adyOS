@@ -156,7 +156,7 @@ async function system(arg) {
                 name: "main",
                 url: "https://raw.githubusercontent.com/tomcqt/adyos-default-repo/master/",
               });
-
+5
               fs.writeFileSync(
                 afs.fsfix(
                   afs.getdefault(arg.usr.username) + ".adypm/repos.json"
@@ -564,8 +564,11 @@ async function contents(arg) {
 function cd(arg, leave) {
   let goto;
   let final_path;
-  if (!arg.cmds[1]) return "cd requires 1 argument";
   if (!leave) {
+    if (!arg.cmds[1]) {
+      ezout.error_nodebug("CD requires 1 or more arguments");
+      return 0;
+    }
     goto = arg.cmds[1].split("/").filter((i) => {
       return i !== "" && i !== "." && i !== ".." && i !== "~";
     });
