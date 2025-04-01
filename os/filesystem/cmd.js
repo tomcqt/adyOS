@@ -156,7 +156,7 @@ async function system(arg) {
                 name: "main",
                 url: "https://raw.githubusercontent.com/tomcqt/adyos-default-repo/master/",
               });
-5
+
               fs.writeFileSync(
                 afs.fsfix(
                   afs.getdefault(arg.usr.username) + ".adypm/repos.json"
