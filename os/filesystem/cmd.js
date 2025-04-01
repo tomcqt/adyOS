@@ -565,6 +565,10 @@ function cd(arg, leave) {
   let goto;
   let final_path;
   if (!leave) {
+    if (!arg.cmds[1]) {
+      ezout.error_nodebug("CD requires 1 or more arguments");
+      return 0;
+    }
     goto = arg.cmds[1].split("/").filter((i) => {
       return i !== "" && i !== "." && i !== ".." && i !== "~";
     });
