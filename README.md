@@ -54,3 +54,6 @@ A full command line pseudo-operating system written entirely in JavaScript using
 - ASCII web browser
 - More CLI interfaces
 - Package manager
+- Split all of the commands into separate files
+- Tiling
+  - Maybe floating windowstoo????
