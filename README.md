@@ -56,4 +56,4 @@ A full command line pseudo-operating system written entirely in JavaScript using
 - Package manager
 - Split all of the commands into separate files
 - Tiling
-  - Maybe floating windowstoo????
+  - Maybe floating windows too????
