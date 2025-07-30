@@ -35,7 +35,6 @@ A full command line pseudo-operating system written entirely in JavaScript using
 
 #### The first full release!
 
-- Wrote adyPM. (In Development)
 - Fixed `run` command.
 - Update some login things.
 - Create top bar.
@@ -46,7 +45,7 @@ A full command line pseudo-operating system written entirely in JavaScript using
 - Add panic screen
 - Add `time` command
 - Add OTA Updates
-- Add `edit` command for easier text editing. (In development)
+- Add `edit` command for easier text editing. (In Development)
 - Create a better debugger called "adybug"
 
 ### Planned features for future releases
@@ -54,3 +53,4 @@ A full command line pseudo-operating system written entirely in JavaScript using
 - Customisable prompts
 - ASCII web browser
 - More CLI interfaces
+- Package manager
