@@ -831,7 +831,7 @@ async function download(arg) {
 // switch workspaces
 function workspace(arg) {
   if (arg.cmds.length >= 2) {
-    return "unimplemented!";
+    return "Not yet implemented!";
   } else {
     return 'adyOS Spaces\n\
 \n\
@@ -875,7 +875,7 @@ function edit(arg) {
   if (arg.cmds.length < 1) {
     ezout.warn("Invalid usage! Please refer to the documentation.");
   } else {
-    return "Not yet implemented!";
+    return "Not yet implemented!"; // TODO: Write entire command
   }
 }
 
