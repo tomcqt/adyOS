@@ -872,7 +872,11 @@ function time(arg) {
 }
 
 function edit(arg) {
-  return "Not yet implemented!";
+  if (arg.cmds.length < 1) {
+    ezout.warn("Invalid usage! Please refer to the documentation.");
+  } else {
+    return "Not yet implemented!";
+  }
 }
 
 // [name, function]
