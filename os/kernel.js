@@ -57,7 +57,7 @@ function panic(err) {
   })[0].length;
   const width = process.stdout.columns || 80; // Default to 80 if undefined
   const padding = Math.max(0, Math.floor((width - longest) / 2));
-  let spacer = " ".repeat(padding - 4);
+  let spacer = " ".repeat(padding - 4 >= 0 ? padding - 4 : 0); // fix for no crashing if under zero
   let lines =
     Math.max(0, Math.floor((process.stdout.rows - message.length) / 2)) - 1;
 
@@ -65,29 +65,29 @@ function panic(err) {
   for (let i = 0; i < lines; i++) {
     console.log();
   }
-  console.log(spacer + "┌" + "─".repeat(longest + 2) + "┐");
+  const extraN =
+    err.name.toLowerCase().startsWith("a") ||
+    err.name.toLowerCase().startsWith("e") ||
+    err.name.toLowerCase().startsWith("i") ||
+    err.name.toLowerCase().startsWith("o") ||
+    err.name.toLowerCase().startsWith("u") ||
+    err.name.toLowerCase().startsWith("y")
+      ? "n"
+      : "";
+
   console.log(
-    spacer +
-      "│ " +
-      ezout.colours.bold +
-      "System panicked!" +
-      ezout.colours.reset +
-      " ".repeat(longest - 16) +
-      " │"
-  );
-  console.log(
-    spacer +
-      "│ We found a(n) " +
-      ezout.colours.bold +
-      ezout.colours.red +
-      err.name +
-      ezout.colours.reset +
-      " due to:" +
-      " ".repeat(longest - ("We found a(n) " + err.name + " due to:").length) +
-      " │"
+    `${spacer}┌${"─".repeat(longest + 2)}┐\
+    ${spacer}│ ${ezout.colours.bold}System panicked!${
+      ezout.colours.reset
+    }${" ".repeat(longest - 16)} │\
+    ${spacer}│ We found a${extraN} ${ezout.colours.bold}${ezout.colours.red}${
+      err.name
+    }${ezout.colours.reset} due to:${" ".repeat(
+      longest - (`We found a${extraN} ` + err.name + " due to:").length
+    )} │`
   );
   err.message.split("\n").forEach((i) => {
-    console.log(spacer + "│ " + i + " ".repeat(longest - i.length) + " │");
+    console.log(`${spacer}│ ${i}${" ".repeat(longest - i.length)} │`);
   });
   console.log(
     spacer +
