@@ -240,7 +240,8 @@ async function system(arg) {
           }
         }
       } else {
-        return "[ ERROR ] No such user!";
+        ezout.error_nodebug("No such user!");
+        return 0;
       }
     } else if (arg.cmds[2] == "update") {
       console.log("Updating...");
@@ -266,9 +267,11 @@ async function system(arg) {
       });
       return "Please restart the OS to use the updated software.";
     }
-    return "[ ERROR ] Argument not found!";
+    ezout.error_nodebug("Argument not found!");
+    return 0;
   } else {
-    return "[ ERROR ] Superuser access needed!";
+    ezout.error_nodebug("Superuser access needed!");
+    return 0;
   }
 }
 
@@ -323,7 +326,8 @@ async function super_(arg) {
     }
   });
   if (!usersdata.users[itemnum].sudo) {
-    return "[ ERROR ] Super is not allowed for this account!";
+    ezout.error_nodebug("Super is not allowed for this account!");
+    return 0;
   }
   for (let i = 0; i < 3; i++) {
     let password_hashed;
@@ -348,7 +352,8 @@ async function super_(arg) {
               lastsuper = Date.now();
               return await cmd[i][1](arg);
             } else {
-              return '[ ERROR ] Command isn\'t allowed to use "super".';
+              ezout.error_nodebug('Command isn\'t allowed to use "super".');
+              return 0;
             }
           }
         }
@@ -873,9 +878,18 @@ function time(arg) {
 
 function edit(arg) {
   if (arg.cmds.length < 1) {
-    ezout.warn("Invalid usage! Please refer to the documentation.");
+    ezout.warn_nodebug("Invalid usage! Please refer to the documentation.");
+    return 0;
   } else {
     return "Not yet implemented!"; // TODO: Write entire command
+
+    const file = fs.readFileSync(arg.cmds.slice(1), "utf-8").split("\n");
+
+    // render
+    function renderScreen() {
+      return;
+      // TODO: Write rendering!
+    }
   }
 }
 
