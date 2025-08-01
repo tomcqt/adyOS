@@ -1,1 +1,0 @@
-.\bin\boot.bat
