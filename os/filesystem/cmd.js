@@ -881,12 +881,31 @@ function edit(arg) {
     ezout.warn_nodebug("Invalid usage! Please refer to the documentation.");
     return 0;
   } else {
-    return "Not yet implemented!"; // TODO: Write entire command
+    const fileName = arg.cmds.slice(1);
+    const file = fs.readFileSync(fileName, "utf-8").split("\n");
 
-    const file = fs.readFileSync(arg.cmds.slice(1), "utf-8").split("\n");
+    let lines = 1;
+    let chars = 1;
 
     // render
     function renderScreen() {
+      console.clear();
+
+      // write top bar
+      let topBar = `edit (in ${fileName}, at ${lines}:${chars})`;
+
+      if (topBar.length > process.stdout.columns) {
+        topBar = topBar.slice(0, process.stdout.columns - 3) + "...";
+      }
+
+      console.log(ezout.inverted_text(ezout.center(topBar, true)));
+
+      // write actual text
+      file.forEach((line, number) => {
+        const lineText = `${ezout.inverted_text(`${number}:`)} ${line}`;
+        console.log(lineText);
+      });
+
       return;
       // TODO: Write rendering!
     }
