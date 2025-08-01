@@ -16,4 +16,26 @@ async function asks(query) {
   );
 }
 
-export { asks };
+// wait for keypress
+function keyIn() {
+  return new Promise((resolve) => {
+    process.stdin.setRawMode(true);
+    process.stdin.resume();
+    process.stdin.setEncoding("utf8");
+
+    function onData(key) {
+      cleanup();
+      return JSON.stringify(key);
+    }
+
+    function cleanup() {
+      process.stdin.setRawMode(false);
+      process.stdin.pause();
+      process.stdin.removeListener("data", onData);
+    }
+
+    process.stdin.on("data", onData);
+  });
+}
+
+export { asks, keyIn };

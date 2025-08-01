@@ -6,6 +6,7 @@ import * as debug from "../../debug.js";
 import * as childprocess from "child_process";
 import * as afs from "./afsdriver.js";
 import * as https from "https";
+import { keyIn } from "../../custom_modules/wfi.js";
 
 // Exit Codes
 // 0 - output nothing
@@ -876,12 +877,21 @@ function time(arg) {
   return 0;
 }
 
-function edit(arg) {
-  if (arg.cmds.length < 1) {
+async function edit(arg) {
+  if (arg.cmds.length < 2 || arg.cmds[1] == "") {
+    // 1 is the name of the command, 2 is the name plus one option
+    // also make sure not to allow "edit "
     ezout.warn_nodebug("Invalid usage! Please refer to the documentation.");
     return 0;
   } else {
-    const fileName = arg.cmds.slice(1);
+    const fileName = arg.cmds.slice(1).join(" ");
+
+    if (!fs.existsSync(fileName)) {
+      ezout.error_nodebug(
+        `Specified file (${fileName}) doesn't exist! (Check directory contents?)`
+      );
+    }
+
     const file = fs.readFileSync(fileName, "utf-8").split("\n");
 
     let lines = 1;
@@ -902,13 +912,43 @@ function edit(arg) {
 
       // write actual text
       file.forEach((line, number) => {
-        const lineText = `${ezout.inverted_text(`${number}:`)} ${line}`;
+        const lineText = `${ezout.colours.bold}${number + 1}:${
+          ezout.colours.reset
+        } ${line}`;
         console.log(lineText);
       });
 
       return;
-      // TODO: Write rendering!
+
+      // TODO: Add cursor rendering
     }
+
+    while (true) {
+      // renderScreen();
+      const result = await keyIn();
+
+      if (result == "\\u001b") {
+        // esc exit
+        return "Exiting...";
+      }
+
+      if (result == "\\u0013") {
+        // ctrl+s save
+        //
+        // TODO: implement saving
+      }
+
+      // ctrl+c, ctrl+v, ctrl+x
+      // copy,   cut,    paste
+
+      // TODO: Implement copy cut & paste
+
+      // arrow keys, move cursor around
+
+      // TODO: Implement cursor movement
+    }
+
+    return "command exited incorrectly!";
   }
 }
 
