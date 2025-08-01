@@ -11,6 +11,14 @@ import * as https from "https";
 // 0 - output nothing
 // 126 - log out
 
+// create the stupid directory structure
+if (!fs.existsSync("os/filesystem/tmp")) {
+  fs.mkdirSync("os/filesystem/tmp");
+}
+if (!fs.existsSync("os/filesystem/tmp/ws")) {
+  fs.mkdirSync("os/filesystem/tmp/ws");
+}
+
 let lastsuper = 0;
 let supercmds = ["system"];
 
@@ -863,52 +871,78 @@ function time(arg) {
   return 0;
 }
 
+function edit(arg) {
+  return "Not yet implemented!";
+}
+
 // [name, function]
 let cmd = [
   ["echo", echo],
+
   ["exit", exit],
   ["quit", exit],
+
   ["system", system],
+
   ["erase", clearscreen],
   ["clear", clearscreen],
+
   ["super", super_],
   ["sudo", super_],
+
   ["contents", contents],
   ["ls", contents],
   ["dir", contents],
+
   ["shutdown", shutdown],
   ["power", power],
+
   ["enter", cd],
   ["cd", cd],
   ["leave", cdotdot],
+
   ["read", read_],
   ["cat", read_],
+
   ["recycle", recycle],
   ["delete", recycle],
   ["remove", recycle],
   ["del", recycle],
   ["rm", recycle],
+
   ["write", write],
+
   ["create", create],
   ["new", create],
+
   ["append", append],
   ["add", append],
+
   ["open", run],
   ["run", run],
   ["start", run],
+
   ["download", download],
   ["get", download],
+
   ["user", user],
+
   ["workspaces", workspace],
   ["workspace", workspace],
   ["ws", workspace],
   ["space", workspace],
   ["spaces", workspace],
+
   ["time", time],
   ["clock", time],
   ["date", time],
   ["gettime", time],
   ["getdate", time],
+
+  ["edit", edit],
+  ["vim", edit],
+  ["vi", edit],
+  ["nano", edit],
 ];
 
 // add debug commands if in debug mode
