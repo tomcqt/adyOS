@@ -136,7 +136,7 @@ async function startup() {
         silent: true,
         replace: "",
       });
-      return;
+      throw err;
     }
   }
   if (os === 126) {
