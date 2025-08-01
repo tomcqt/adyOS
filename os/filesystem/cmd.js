@@ -884,7 +884,8 @@ async function edit(arg) {
     ezout.warn_nodebug("Invalid usage! Please refer to the documentation.");
     return 0;
   } else {
-    const fileName = afs.fsfix(afs.getdefault() + arg.cmds.slice(1).join(" "));
+    const filePath = arg.cmds.slice(1).join(" ");
+    const fileName = afs.fsfix(afs.getdefault() + filePath);
 
     if (!fs.existsSync(fileName)) {
       ezout.error_nodebug(
