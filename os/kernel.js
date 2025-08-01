@@ -136,6 +136,7 @@ async function startup() {
         silent: true,
         replace: "",
       });
+      console.log(ezout.colours.bold + "Full error log:" + ezout.colours.reset);
       throw err;
     }
   }
