@@ -76,13 +76,13 @@ function panic(err) {
       : "";
 
   console.log(
-    `${spacer}┌${"─".repeat(longest + 2)}┐\n\
-    ${spacer}│ ${ezout.colours.bold}System panicked!${
-      ezout.colours.reset
-    }${" ".repeat(longest - 16)} │\n\
-    ${spacer}│ We found a${extraN} ${ezout.colours.bold}${ezout.colours.red}${
-      err.name
-    }${ezout.colours.reset} due to:${" ".repeat(
+    `${spacer}┌${"─".repeat(longest + 2)}┐\n${spacer}│ ${
+      ezout.colours.bold
+    }System panicked!${ezout.colours.reset}${" ".repeat(
+      longest - 16
+    )} │\n${spacer}│ We found a${extraN} ${ezout.colours.bold}${
+      ezout.colours.red
+    }${err.name}${ezout.colours.reset} due to:${" ".repeat(
       longest - (`We found a${extraN} ` + err.name + " due to:").length
     )} │`
   );
