@@ -59,3 +59,7 @@ A full command line pseudo-operating system written entirely in JavaScript using
 - Split all of the commands into separate files
 - Tiling
   - Maybe floating windows too????
+
+## Contributors
+
+- gbschalt
