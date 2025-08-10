@@ -1,5 +1,7 @@
 # adyOS v1.0.0 beta (Development Branch)
 
+By tomcat & more
+
 ## [Click here to to the production branch.](https://git.ady.best/tree/prod)
 
 ### Contains 2.0k+ lines of code!
