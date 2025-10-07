@@ -2,7 +2,7 @@
 
 import * as input from "./../custom_modules/wfi.js";
 import * as afs from "./filesystem/afsdriver.js";
-import * as cmd from "./filesystem/cmd.js";
+import { load } from "./filesystem/cmd.js";
 import * as ezout from "./ezout.js";
 import * as fs from "fs";
 import * as debug from "../debug.js";
@@ -23,6 +23,9 @@ async function start(username) {
   let workspace = "none";
 
   let version = fs.readFileSync("./os/version", "utf-8"); // read the version file
+
+  // load the fancy command system
+  let cmd = await load();
 
   // awesome user info topbar
   function rendertopbar(ending) {
@@ -108,15 +111,16 @@ async function start(username) {
     // sends debug info if in debug mode
     ezout.info(command);
     ezout.info(commandsplit);
+    // ezout.info(cmd);
 
     // checks if command exists
-    if (cmd.cmd.find((item) => item[0] === commandsplit[0].toLowerCase())) {
-      for (let i = 0; i < cmd.cmd.length; i++) {
-        if (cmd.cmd[i][0] === commandsplit[0].toLowerCase()) {
+    if (cmd.find((item) => item[0] === commandsplit[0].toLowerCase())) {
+      for (let i = 0; i < cmd.length; i++) {
+        if (cmd[i][0] === commandsplit[0].toLowerCase()) {
           // run command and store result
           let result;
           try {
-            result = await cmd.cmd[i][1]({
+            result = await cmd[i][1]({
               cmd: command,
               cmds: commandsplit,
               usr: {

@@ -8,6 +8,27 @@ import * as fs from "fs";
 
 let stream, debugconsole;
 
+function getCallerFile() {
+  try {
+    throw new Error();
+  } catch (err) {
+    // The stack trace will contain information about the call stack.
+    // The first line is the error itself.
+    // The second line is the `getCallerFile` function.
+    // The third line is the actual caller.
+    const stackLines = err.stack.split("\n");
+    if (stackLines.length >= 4) {
+      const callerLine = stackLines[3];
+      // return `{fileName}:{lineNumber}:{columnNumber}`
+      const match = callerLine.match(/\((.*):(\d+):(\d+)\)/);
+      if (match) {
+        return `${match[1]}:${match[2]}:${match[3]}`;
+      }
+    }
+  }
+  return undefined; // If unable to determine the caller file.
+}
+
 if (debug.debug == true) {
   stream = fs.createWriteStream("./debug.log");
 
@@ -17,7 +38,9 @@ if (debug.debug == true) {
 function info(text) {
   if (debug.debug == true) {
     debugconsole.log(
-      `[ ${colours.bold + colours.blue}INFO ${colours.reset}] ` + text
+      `[ ${colours.bold + colours.blue}INFO ${colours.reset}] ` +
+        text +
+        ` @ ${getCallerFile()}`
     );
   }
 }
@@ -25,7 +48,9 @@ function info(text) {
 function error(text) {
   if (debug.debug == true) {
     debugconsole.log(
-      `[ ${colours.bold + colours.red}ERROR${colours.reset} ] ` + text
+      `[ ${colours.bold + colours.red}ERROR${colours.reset} ] ` +
+        text +
+        ` @ ${getCallerFile()}`
     );
   }
 }
@@ -33,7 +58,9 @@ function error(text) {
 function warn(text) {
   if (debug.debug == true) {
     debugconsole.log(
-      `[ ${colours.bold + colours.yellow}WARN${colours.reset} ] ` + text
+      `[ ${colours.bold + colours.yellow}WARN${colours.reset} ] ` +
+        text +
+        ` @ ${getCallerFile()}`
     );
   }
 }
@@ -41,7 +68,9 @@ function warn(text) {
 function working(text) {
   if (debug.debug == true) {
     debugconsole.log(
-      `[ ${colours.bold + colours.magenta}WORKING${colours.reset} ] ` + text
+      `[ ${colours.bold + colours.magenta}WORKING${colours.reset} ] ` +
+        text +
+        ` @ ${getCallerFile()}`
     );
   }
 }
@@ -49,7 +78,9 @@ function working(text) {
 function done(text) {
   if (debug.debug == true) {
     debugconsole.log(
-      `[ ${colours.bold + colours.green}DONE${colours.reset} ] ` + text
+      `[ ${colours.bold + colours.green}DONE${colours.reset} ] ` +
+        text +
+        ` @ ${getCallerFile()}`
     );
   }
 }
