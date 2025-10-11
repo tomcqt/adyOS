@@ -134,11 +134,17 @@ async function startup() {
       throw err;
     } else {
       panic(err);
-      data = await read({
+      let data = await read({
         prompt: "",
         silent: true,
         replace: "",
       });
+      if (data.toLowerCase()[-1] == "l") {
+        throw err; // throw error if asked
+      } else {
+        // or just
+        process.exit(); // simply exit the program
+      }
     }
   }
   if (os === 126) {
