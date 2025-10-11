@@ -2,6 +2,10 @@
 
 By tomcat & more
 
+# Warning: BRANCH IS CURRENTLY BROKEN!!!
+
+## Lots of commands are not avaliable, will be fixed soon.
+
 ## [Click here to to the production branch.](https://git.ady.best/tree/prod)
 
 ### Contains 3.5k+ lines of code!
