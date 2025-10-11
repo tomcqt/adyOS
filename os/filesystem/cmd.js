@@ -3,8 +3,10 @@ import * as afs from "./afsdriver.js";
 import * as debug from "../../debug.js";
 import * as ezout from "../ezout.js";
 
-async function load() {
+async function load(isMan = false) {
   let cmd = [];
+
+  let man = {};
 
   ezout.working("Loading commands...");
 
@@ -66,10 +68,20 @@ async function load() {
           commandData.name.forEach((name) => {
             ezout.info("adding " + name + ` (${index})`);
             cmd.push([name, commandData.func]);
+            man[name] = {
+              name: commandData.name,
+              desc: commandData.desc,
+              usage: commandData.usage,
+            };
           });
         } else {
           ezout.info("adding " + commandData.name + ` (${index})`);
           cmd.push([commandData.name, commandData.func]);
+          man[commandData.name] = {
+            name: commandData.name,
+            desc: commandData.desc,
+            usage: commandData.usage,
+          };
         }
         // fix for multiple names ^
       });
@@ -90,9 +102,19 @@ async function load() {
           command.name.forEach((name) => {
             ezout.info("adding " + name);
             cmd.push([name, command.func]);
+            man[name] = {
+              name: command.name,
+              desc: command.desc,
+              usage: command.usage,
+            };
           });
         } else {
           cmd.push([command.name, command.func]);
+          man[command.name] = {
+            name: command.name,
+            desc: command.desc,
+            usage: command.usage,
+          };
         }
         // fix for multiple names ^
         ezout.done("Loaded debug command: " + debugfiles[i]);
@@ -111,9 +133,19 @@ async function load() {
         command.name.forEach((name) => {
           ezout.info("adding " + name);
           cmd.push([name, command.func]);
+          man[name] = {
+            name: command.name,
+            desc: command.desc,
+            usage: command.usage,
+          };
         });
       } else {
         cmd.push([command.name, command.func]);
+        man[command.name] = {
+          name: command.name,
+          desc: command.desc,
+          usage: command.usage,
+        };
       }
       // fix for multiple names ^
       ezout.done("Loaded optional command: " + command);
@@ -123,7 +155,11 @@ async function load() {
   ezout.done("Loaded " + cmd.length + " commands.");
   ezout.info(cmd.map((a) => a[0]).join(", "));
   // export after everything has finished
-  return cmd;
+  if (!isMan) {
+    return cmd;
+  } else {
+    return man;
+  }
 }
 
 export { load };

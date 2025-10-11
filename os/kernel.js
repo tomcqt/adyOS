@@ -47,7 +47,7 @@ function panic(err) {
     "We found a(n) " + err.name + " due to:",
     "Running adyOS version " + fs.readFileSync("./os/version"),
     "Please add an issue in the project GitHub if you can replicate this panic.",
-    "Press enter to shut down...",
+    "Press enter to shut down... (L for logs)",
   ];
   err.message.split("\n").forEach((i) => {
     message.push(i);
@@ -112,7 +112,10 @@ function panic(err) {
       " │"
   );
   console.log(
-    spacer + "│ Press enter to shut down..." + " ".repeat(longest - 27) + " │"
+    spacer +
+      "│ Press enter to shut down... (L for logs)" +
+      " ".repeat(longest - 40) +
+      " │"
   );
   console.log(spacer + "└" + "─".repeat(longest + 2) + "┘");
   for (let i = 1; i < lines; i++) {
@@ -131,13 +134,11 @@ async function startup() {
       throw err;
     } else {
       panic(err);
-      await read({
+      data = await read({
         prompt: "",
         silent: true,
         replace: "",
       });
-      console.log(ezout.colours.bold + "Full error log:" + ezout.colours.reset);
-      throw err;
     }
   }
   if (os === 126) {

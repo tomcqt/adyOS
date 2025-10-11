@@ -141,6 +141,7 @@ async function start(username) {
             });
           } catch (err) {
             throw err;
+            // what the fuck?????? why??????????????
           }
           // print result data to screen and handle return codes.
           // if its an await function turn it into a string

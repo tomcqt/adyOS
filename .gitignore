@@ -137,6 +137,12 @@ users.json
 os/filesystem/home/
 os/filesystem/sys/
 
+# macOS BULLSHIT
+.DS_Store
+
+# old files :(
+*-old.*
+
 # more things to ignore
 .watchmanconfig
 .codesandbox
