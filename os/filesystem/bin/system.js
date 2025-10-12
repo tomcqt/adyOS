@@ -232,6 +232,9 @@ async function system(arg) {
 export default {
   func: system,
   name: "system",
-  desc: "System settings\nRequires `super`.",
+  desc: [
+    "System settings",
+    "Requires `super`.",
+  ],
   usage: "super system [info|locks|optional|users|update] [...]",
 };
