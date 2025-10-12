@@ -29,7 +29,13 @@ async function man(arg) {
       console.log(
         `Usage: ${ezout.colours.bold}${commands[commandName].usage}${ezout.colours.reset}\n`
       );
-      console.log(`\n${commands[commandName].desc}`);
+      console.log(
+        `${
+          commands[commandName].desc.isArray
+            ? commands[commandName].desc.join("\n")
+            : commands[commandName].desc
+        }\n`
+      );
     } else {
       ezout.warn_nodebug("Command not found!");
       return 0;
