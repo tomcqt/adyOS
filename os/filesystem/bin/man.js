@@ -15,7 +15,9 @@ async function man(arg) {
     const commandName = arg.cmds[1];
     if (commands.hasOwnProperty(commandName)) {
       console.log(
-        `\n${ezout.colours.bold}adyOS Manual - ${ezout.colours.cyan}${commandName}${ezout.colours.reset}`
+        `\n${ezout.colours.bold}adyOS Manual - ${ezout.colours.cyan}${
+          commandName.isArray ? commandName.name[0] : commandName
+        }${ezout.colours.reset}`
       );
       console.log(
         `Aliases: ${ezout.colours.bold}${
@@ -50,7 +52,7 @@ async function man(arg) {
 
 export default {
   func: man,
-  name: ["man", "manual", "help", "howto"],
+  name: ["manual", "man", "help", "howto"],
   desc: "Gives you helpful information!",
   usage: "manual [command]",
 };
