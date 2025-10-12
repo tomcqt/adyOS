@@ -146,4 +146,3 @@ os/filesystem/sys/
 # more things to ignore
 .watchmanconfig
 .codesandbox
-.zshrc
