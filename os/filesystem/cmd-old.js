@@ -955,29 +955,29 @@ async function edit(arg) {
 
 // [name, function]
 let cmd = [
-  ["echo", echo],
+  ["echo", echo], // done
 
-  ["exit", exit],
-  ["quit", exit],
+  ["exit", exit], // done
+  ["quit", exit], // done
 
-  ["system", system],
+  ["system", system], // done
 
-  ["erase", clearscreen],
-  ["clear", clearscreen],
+  ["erase", clearscreen], // done
+  ["clear", clearscreen], // done
 
-  ["super", super_],
-  ["sudo", super_],
+  ["super", super_], // done
+  ["sudo", super_], // done
 
-  ["contents", contents],
-  ["ls", contents],
-  ["dir", contents],
+  ["contents", contents], // done
+  ["ls", contents], // done
+  ["dir", contents], // done
 
-  ["shutdown", shutdown],
-  ["power", power],
+  ["shutdown", shutdown], // done
+  ["power", power], // done
 
-  ["enter", cd],
-  ["cd", cd],
-  ["leave", cdotdot],
+  ["enter", cd], // done
+  ["cd", cd], // done
+  ["leave", cdotdot], // done
 
   ["read", read_],
   ["cat", read_],
@@ -1003,7 +1003,7 @@ let cmd = [
   ["download", download],
   ["get", download],
 
-  ["user", user],
+  ["user", user], // done
 
   ["workspaces", workspace],
   ["workspace", workspace],

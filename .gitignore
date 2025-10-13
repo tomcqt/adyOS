@@ -142,6 +142,7 @@ os/filesystem/sys/
 
 # old files :(
 *-old.*
+cmd-old.js
 
 # more things to ignore
 .watchmanconfig
