@@ -979,16 +979,16 @@ let cmd = [
   ["cd", cd], // done
   ["leave", cdotdot], // done
 
-  ["read", read_],
-  ["cat", read_],
+  ["read", read_], // done
+  ["cat", read_], // done
 
-  ["recycle", recycle],
-  ["delete", recycle],
-  ["remove", recycle],
-  ["del", recycle],
-  ["rm", recycle],
+  ["recycle", recycle], // done
+  ["delete", recycle], // done
+  ["remove", recycle], // done
+  ["del", recycle], // done
+  ["rm", recycle], // done
 
-  ["write", write],
+  ["write", write], // done
 
   ["create", create],
   ["new", create],
