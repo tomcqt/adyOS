@@ -89,6 +89,8 @@ async function start(username) {
     } (UTC${timezoneOffset >= 0 ? "+" + timezoneOffset : timezoneOffset})\n`
   );
 
+  let lastsuper = 0;
+
   // main command process
   while (true) {
     // rewrites the path for the prompt
@@ -138,6 +140,7 @@ async function start(username) {
                 version: version,
               },
               version: version,
+              lastsuper: lastsuper,
             });
           } catch (err) {
             throw err;
@@ -176,6 +179,10 @@ async function start(username) {
 
             if (result.hasOwnProperty("directory")) {
               path = result.directory;
+            }
+
+            if (result.hasOwnProperty("lastsuper")) {
+              lastsuper = result.lastsuper;
             }
             // also check if we should output something
             if (result.output !== 0) {

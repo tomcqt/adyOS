@@ -67,7 +67,7 @@ async function load(isMan = false) {
           ezout.info("multiple names detected");
           commandData.name.forEach((name) => {
             ezout.info("adding " + name + ` (${index})`);
-            cmd.push([name, commandData.func]);
+            cmd.push([name, commandData.func, commandData.flags]);
             man[name] = {
               name: commandData.name,
               desc: commandData.desc,
@@ -76,7 +76,7 @@ async function load(isMan = false) {
           });
         } else {
           ezout.info("adding " + commandData.name + ` (${index})`);
-          cmd.push([commandData.name, commandData.func]);
+          cmd.push([commandData.name, commandData.func, commandData.flags]);
           man[commandData.name] = {
             name: commandData.name,
             desc: commandData.desc,
@@ -101,7 +101,7 @@ async function load(isMan = false) {
           ezout.info("multiple names detected");
           command.name.forEach((name) => {
             ezout.info("adding " + name);
-            cmd.push([name, command.func]);
+            cmd.push([name, command.func, command.flags]);
             man[name] = {
               name: command.name,
               desc: command.desc,
@@ -109,7 +109,7 @@ async function load(isMan = false) {
             };
           });
         } else {
-          cmd.push([command.name, command.func]);
+          cmd.push([command.name, command.func, command.flags]);
           man[command.name] = {
             name: command.name,
             desc: command.desc,
@@ -132,7 +132,7 @@ async function load(isMan = false) {
         ezout.info("multiple names detected");
         command.name.forEach((name) => {
           ezout.info("adding " + name);
-          cmd.push([name, command.func]);
+          cmd.push([name, command.func, command.flags]);
           man[name] = {
             name: command.name,
             desc: command.desc,
@@ -140,7 +140,7 @@ async function load(isMan = false) {
           };
         });
       } else {
-        cmd.push([command.name, command.func]);
+        cmd.push([command.name, command.func, command.flags]);
         man[command.name] = {
           name: command.name,
           desc: command.desc,
