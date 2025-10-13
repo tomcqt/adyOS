@@ -3,7 +3,7 @@ import * as ezout from "../../ezout.js";
 
 async function man(arg) {
   let version = "0.3b"; // this numbering is bullshit, why does it start at 0.3b
-  let commands = await cmd.load(true);
+  let commands = await cmd.load();
   if (arg.cmds.length == 1) {
     console.log(
       `${ezout.colours.bold}adyOS Manual (version ${version})${ezout.colours.reset}`

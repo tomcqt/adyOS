@@ -42,9 +42,10 @@ async function super_(arg) {
       if (commands.hasOwnProperty(arg.cmds[1])) {
         if (commands[arg.cmds[1]].flags && commands[arg.cmds[1]].flags.super) {
           let output = await commands[arg.cmds[1]].func(arg);
-          output.then((result) => {
-            return { ...result, lastsuper: Date.now() };
-          });
+          return {
+            ...output,
+            lastsuper: Date.now(),
+          };
         } else {
           ezout.error_nodebug('Command isn\'t allowed to use "super".');
           return 0;

@@ -25,7 +25,7 @@ async function start(username) {
   let version = fs.readFileSync("./os/version", "utf-8"); // read the version file
 
   // load the fancy command system
-  let cmd = await load();
+  let cmd = await load(false);
 
   // awesome user info topbar
   function rendertopbar(ending) {

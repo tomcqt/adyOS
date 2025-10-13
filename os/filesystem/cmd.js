@@ -3,10 +3,14 @@ import * as afs from "./afsdriver.js";
 import * as debug from "../../debug.js";
 import * as ezout from "../ezout.js";
 
-async function load(isMan = false) {
-  let cmd = [];
+async function load(newSystem = true) {
+  let cmd = null;
 
-  let man = {};
+  if (newSystem) {
+    cmd = {};
+  } else {
+    cmd = [];
+  }
 
   ezout.working("Loading commands...");
 
@@ -63,26 +67,16 @@ async function load(isMan = false) {
 
       // multiple functions within one file (e.g. power and shutdown within power.js)
       command.forEach((commandData, index) => {
-        if (Array.isArray(commandData.name)) {
-          ezout.info("multiple names detected");
-          commandData.name.forEach((name) => {
-            ezout.info("adding " + name + ` (${index})`);
+        if (!Array.isArray(commandData.name))
+          commandData.name = [commandData.name];
+        commandData.name.forEach((name) => {
+          ezout.info("adding " + name + ` (${index})`);
+          if (newSystem) {
+            cmd[name] = commandData;
+          } else {
             cmd.push([name, commandData.func, commandData.flags]);
-            man[name] = {
-              name: commandData.name,
-              desc: commandData.desc,
-              usage: commandData.usage,
-            };
-          });
-        } else {
-          ezout.info("adding " + commandData.name + ` (${index})`);
-          cmd.push([commandData.name, commandData.func, commandData.flags]);
-          man[commandData.name] = {
-            name: commandData.name,
-            desc: commandData.desc,
-            usage: commandData.usage,
-          };
-        }
+          }
+        });
         // fix for multiple names ^
       });
       ezout.done("Loaded command: " + files[i]);
@@ -94,72 +88,41 @@ async function load(isMan = false) {
     const debugfiles = fs.readdirSync(afs.fsfix("bin/debug"));
     for (let i = 0; i < debugfiles.length; i++) {
       if (debugfiles[i].endsWith(".js")) {
-        ezout.working("Loading debug command: " + debugfiles[i]);
-        let command = await import("./bin/debug/" + debugfiles[i]);
+        ezout.working("Loading command: " + debugfiles[i]);
+        let command = await import("./bin/" + debugfiles[i]);
         command = command.default;
-        if (Array.isArray(command.name)) {
-          ezout.info("multiple names detected");
-          command.name.forEach((name) => {
-            ezout.info("adding " + name);
-            cmd.push([name, command.func, command.flags]);
-            man[name] = {
-              name: command.name,
-              desc: command.desc,
-              usage: command.usage,
-            };
+        // dont crash if its only one thing
+        if (!Array.isArray(command)) command = [command];
+
+        // multiple functions within one file (e.g. power and shutdown within power.js)
+        command.forEach((commandData, index) => {
+          if (!Array.isArray(commandData.name))
+            commandData.name = [commandData.name];
+          commandData.name.forEach((name) => {
+            ezout.info("adding " + name + ` (${index})`);
+            if (newSystem) {
+              cmd[name] = commandData;
+            } else {
+              cmd.push([name, commandData.func, commandData.flags]);
+            }
           });
-        } else {
-          cmd.push([command.name, command.func, command.flags]);
-          man[command.name] = {
-            name: command.name,
-            desc: command.desc,
-            usage: command.usage,
-          };
-        }
-        // fix for multiple names ^
-        ezout.done("Loaded debug command: " + debugfiles[i]);
+          // fix for multiple names ^
+        });
+        ezout.done("Loaded command: " + debugfiles[i]);
       }
     }
   }
 
   // optional commands
-  for (let command in optional.commands) {
-    if (optional.commands[command]) {
-      ezout.working("Loading optional command: " + command);
-      let command = await import("./bin/optional/" + command + ".js");
-      command = command.default;
-      if (Array.isArray(command.name)) {
-        ezout.info("multiple names detected");
-        command.name.forEach((name) => {
-          ezout.info("adding " + name);
-          cmd.push([name, command.func, command.flags]);
-          man[name] = {
-            name: command.name,
-            desc: command.desc,
-            usage: command.usage,
-          };
-        });
-      } else {
-        cmd.push([command.name, command.func, command.flags]);
-        man[command.name] = {
-          name: command.name,
-          desc: command.desc,
-          usage: command.usage,
-        };
-      }
-      // fix for multiple names ^
-      ezout.done("Loaded optional command: " + command);
-    }
-  }
+  // add later when actually implementing that shit
+  null;
 
   ezout.done("Loaded " + cmd.length + " commands.");
-  ezout.info(cmd.map((a) => a[0]).join(", "));
+  if (!newSystem) ezout.info(cmd.map((a) => a[0]).join(", "));
+  else ezout.info(Object.keys(cmd).join(", "));
+
   // export after everything has finished
-  if (!isMan) {
-    return cmd;
-  } else {
-    return man;
-  }
+  return cmd;
 }
 
 export { load };
