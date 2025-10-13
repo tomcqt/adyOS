@@ -139,7 +139,7 @@ async function startup() {
         silent: true,
         replace: "",
       });
-      if (data.toLowerCase()[-1] == "l") {
+      if (data.toLowerCase()[data.toLowerCase().length - 1] == "l") {
         throw err; // throw error if asked
       } else {
         // or just

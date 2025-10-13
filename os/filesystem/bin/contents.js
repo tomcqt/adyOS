@@ -1,3 +1,6 @@
+import * as ezout from "../../ezout.js";
+import * as fs from "fs";
+
 // directory system
 // return directory contents
 // contents
