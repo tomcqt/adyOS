@@ -33,7 +33,7 @@ async function man(arg) {
       );
       console.log(
         `${
-          commands[commandName].desc.isArray
+          Array.isArray(commands[commandName].desc)
             ? commands[commandName].desc.join("\n")
             : commands[commandName].desc
         }\n`
