@@ -4,6 +4,20 @@ import * as ezout from "../../ezout.js";
 
 // write file
 function write(arg) {
+  // error correction
+  if (!fs.existsSync(afs.fsfix(arg.dir.path) + arg.cmds[1])) {
+    ezout.error_nodebug("File doesn't exist.");
+    return 0;
+  }
+  if (!fs.statSync(afs.fsfix(arg.dir.path + arg.cmds[1])).isFile()) {
+    ezout.warn_nodebug("That is a directory, not a file.");
+    return 0;
+  }
+  if (isNaN(arg.cmds[2]) || arg.cmds[2] < 1) {
+    ezout.warn_nodebug("Invalid line number.");
+    return 0;
+  }
+
   if (arg.cmds[1] != "users.json" && arg.dir.path != "/") {
     let file = fs
       .readFileSync(afs.fsfix(arg.dir.path) + arg.cmds[1])
